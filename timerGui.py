@@ -34,12 +34,13 @@ class ButtonState(Enum):
 		BUTTONRELEASED = True
 #		BUTTONCOMMAND
 
-cState = TimerState(1)
-bState = ButtonState(GPIO.input(21))
-
 ##Using Pin Names
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Button to GPIO21
+
+cState = TimerState(1)
+bState = ButtonState(GPIO.input(21))
+
 
 ##Does Button Debounce Through Delay Read
 def checkPushButton():
@@ -98,42 +99,42 @@ def quit(*args):
     root.destroy()
     
 def show_Resttime(endTime): 
-	global iRounds
-	##Set State Aesthetics
-	root.configure(background='blue')
-	lbl.config(background="blue",foreground="black")
+    global iRounds
+    ##Set State Aesthetics
+    root.configure(background='blue')
+    lbl.config(background="blue",foreground="black")
     
     if (cState == TimerState.STOPPED):
-		return(0)
+        return(0)
 
     # Get the time remaining until the event
-	remainder = endTime - datetime.now()
-    
-	##play Time Approach beep
-	#if (remainder.total_seconds()  10 ):
-		
-	if (remainder.total_seconds() <= 10 ):
-		sndBeep.play()
-		showEasterEgg()
-	
-	# remove the microseconds part
-	#remainder = remainder - timedelta(microseconds=remainder.microseconds)
-    # Show the time left on  the global label object
-	txt.set(formatTimerString(remainder))
+    remainder = endTime - datetime.now()
 
-	if (remainder.total_seconds() > 1):
-		# Carry Rest CountDown If Timer Is not Stopped
-		if (cState != TimerState.STOPPED):
-			root.after(1000, show_Resttime,endTime)
-	else:
-		sndCombat.play()
-		endTime = datetime.now() + timedelta(minutes=troundTime)
-		iRounds = iRounds + 1 ##Increment Number of Rounds
-		#txtRound.set('Round {:2}'.format(iRounds) )
-		showRound(iRounds)
-		hideEasterEgg()
-		if (cState != TimerState.STOPPED):
-			root.after(1000, show_Roundtime,endTime)
+    ##play Time Approach beep
+    #if (remainder.total_seconds()  10 ):
+            
+    if (remainder.total_seconds() <= 10 ):
+        sndBeep.play()
+        showEasterEgg()
+    
+    # remove the microseconds part
+    #remainder = remainder - timedelta(microseconds=remainder.microseconds)
+# Show the time left on  the global label object
+    txt.set(formatTimerString(remainder))
+
+    if (remainder.total_seconds() > 1):
+            # Carry Rest CountDown If Timer Is not Stopped
+            if (cState != TimerState.STOPPED):
+                    root.after(1000, show_Resttime,endTime)
+    else:
+            sndCombat.play()
+            endTime = datetime.now() + timedelta(minutes=troundTime)
+            iRounds = iRounds + 1 ##Increment Number of Rounds
+            #txtRound.set('Round {:2}'.format(iRounds) )
+            showRound(iRounds)
+            hideEasterEgg()
+            if (cState != TimerState.STOPPED):
+                    root.after(1000, show_Roundtime,endTime)
 
 
 def show_Roundtime(endTime):
@@ -191,12 +192,13 @@ imglogo = ImageTk.PhotoImage(Image.open("res/neonLogo.jpeg") )
 
 ##Aesthetics 
 fnt = font.Font(family='Verdana', size=80, weight='bold')
+fnts = font.Font(family='Verdana', size=60, weight='bold')
 txt = StringVar()
 lbl = ttk.Label(root, textvariable=txt, font=fnt, foreground="#81ced4", background="black")
 lbl.place(relx=0.5, rely=0.5, anchor=CENTER)
 
 txtRound = StringVar()
-lblRound = ttk.Label(root, textvariable=txtRound, font=fnt, foreground="#81ced4", background="black")
+lblRound = ttk.Label(root, textvariable=txtRound, font=fnts, foreground="#81ced4", background="black")
 
 ##Add Logo To Center top
 lbllogo = ttk.Label(root, image=imglogo).pack(side="top")
