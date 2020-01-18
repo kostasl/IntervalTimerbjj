@@ -30,6 +30,7 @@ def showEasterEgg():
 
 def hideEasterEgg():
 	global lblEasterEgg
+	lblEasterEgg.pack(side="bottom")
 	lblEasterEgg.pack_forget() ##Hide it
 
 def showRound(iRounds):
@@ -80,8 +81,8 @@ def show_Roundtime(endTime):
 	root.configure(background='black')
 	lbl.config(background="black",foreground="#81ced4")
 	hideEasterEgg()
-	lblEasterEgg.pack_forget() ##Hide it
 	
+
 	# Get the time remaining until the event
 	remainder = endTime - datetime.now() + timedelta(seconds=1)
 
