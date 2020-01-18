@@ -28,34 +28,47 @@ class TimerState(Enum):
 		STOPPED = 1
 		ROLL = 2
 		REST = 3
-		BUTTONPRESSED = 4
+
+class ButtonState(Enum)
+		BUTTONPRESSED = False
+		BUTTONRELEASED = True
+#		BUTTONCOMMAND
 
 cState = TimerState(1)
+bState = ButtonState(GPIO.input(21))
 
 ##Using Pin Names
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Button to GPIO21
 
+##Does Button Debounce Through Delay Read
 def checkPushButton():
+	global cState
+	global bState
 	button_state = GPIO.input(21)
-	if (button_state == False):
-		showEasterEgg()
-		print('Button Pressed...')
+	if (button_state == False and (bState == ButtonState.BUTTONRELEASED) ):
+		bState = ButtonState.BUTTONPRESSED
+		print('Button Pressed.')
 		if (cState == TimerState.STOPPED):
 			cState = TimerState.ROLL ## Start Timer
-			# Set the end date and time for the countdown
 			endTime = datetime.now() + timedelta(minutes=troundTime,seconds=1)
 			showRound(iRounds)
 			show_Roundtime(endTime)
 
 			print('ROLL STATE')
-		elif (cState == TimerState.ROLL):
-			cState = TimerState.STOPPED
-        #time.sleep(0.2)
-	else:
-		hideEasterEgg()
 
-	root.after(20, checkPushButton())
+			hideEasterEgg()
+		else ##Times Was Running So Stop it
+			cState = TimerState.STOPPED ## Stop Timer
+			showEasterEgg()
+
+	## Set Button Released
+	elif (button_state == True and (bState == ButtonState.BUTTONPRESSED):
+		bState = ButtonState.BUTTONRELEASED
+		print('Button Released.')
+
+	# Delay Recursive
+	root.after(100, checkPushButton())
 
 
 def showEasterEgg():
