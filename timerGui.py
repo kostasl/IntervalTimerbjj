@@ -49,10 +49,12 @@ def checkPushButton():
 	if (button_state == False and (bState == ButtonState.BUTTONRELEASED) ):
 		bState = ButtonState.BUTTONPRESSED
 		print('Button Pressed.')
+		## If Timer Was Stopped Then Button Should Start it 
 		if (cState == TimerState.STOPPED):
-			cState = TimerState.ROLL ## Start Timer
+			
+			cState = TimerState.ROLL 
 			endTime = datetime.now() + timedelta(minutes=troundTime,seconds=1)
-			showRound(iRounds)
+			showRound(iRounds) ##Start The Timer
 			show_Roundtime(endTime)
 
 			print('ROLL STATE')
@@ -69,7 +71,7 @@ def checkPushButton():
 		print('Button Released.')
 
 	# Delay Recursive
-	root.after(100, checkPushButton())
+	root.after(100, checkPushButton)
 
 
 def showEasterEgg():
@@ -209,9 +211,7 @@ pygame.draw.circle(surface,pygame.Color(250, 250, 250,200),(300, 60), 50, 10)
 
 #root.after(0, show_Roundtime,)
 
-root.after(0, checkPushButton())
-
-
+root.after(10, checkPushButton)
 
     
 root.mainloop()
