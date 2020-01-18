@@ -100,6 +100,10 @@ def show_Resttime(endTime):
 	##Set State Aesthetics
 	root.configure(background='blue')
 	lbl.config(background="blue",foreground="black")
+    
+    if (cState == TimerState.STOPPED):
+		return(0)
+
     # Get the time remaining until the event
 	remainder = endTime - datetime.now()
     
@@ -135,6 +139,8 @@ def show_Roundtime(endTime):
 	root.configure(background='black')
 	lbl.config(background="black",foreground="#81ced4")
 	
+	if (cState == TimerState.STOPPED):
+		return(0)
 	
 
 	# Get the time remaining until the event
