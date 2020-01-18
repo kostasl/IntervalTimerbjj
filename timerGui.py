@@ -20,12 +20,14 @@ iRounds = 0 ##Count the number of rounds passed
 troundTime = 1 ##min
 trestTime = 0.5
 
-
+def formatTimerString(remainder):
+	return( '{:02}:{:02}'.format(int(remainder.total_seconds()/60), int(remainder.total_seconds())) )
 
 def quit(*args):
     root.destroy()
     
 def show_Resttime(endTime): 
+	global iRounds
 	##Set State Aesthetics
 	root.configure(background='blue')
 	lbl.config(background="blue",foreground="black")
@@ -47,10 +49,10 @@ def show_Resttime(endTime):
 	else:
 		sndCombat.play()
 		endTime = datetime.now() + timedelta(minutes=troundTime)
+		iRounds = iRounds + 1 ##Increment Number of Rounds
+		txtRound.set('Round {:2}'.format(iRounds) )
 		root.after(1000, show_Roundtime,endTime)
 
-def formatTimerString(remainder):
-	return( '{:02}:{:02}'.format(int(remainder.total_seconds()/60), int(remainder.total_seconds())) )
 
 def show_Roundtime(endTime):
 	##Set State Aesthetics
@@ -105,11 +107,17 @@ txt = StringVar()
 lbl = ttk.Label(root, textvariable=txt, font=fnt, foreground="#81ced4", background="black")
 lbl.place(relx=0.5, rely=0.5, anchor=CENTER)
 
+txtRound = StringVar()
+lblRound = ttk.Label(root, textvariable=txtRound, font=fnt, foreground="#81ced4", background="black")
+lblRound.place(relx=0.8, rely=0.1, anchor=CENTER)
+
 #Creates a Tkinter-compatible photo image, which can be used everywhere Tkinter expects an image object.
 imglogo = ImageTk.PhotoImage(Image.open("res/neonLogo.jpeg") )
 lbllogo = ttk.Label(root, image=imglogo).pack(side="top")
 
 ##Start The Round Timer recursive 
+iRounds = iRounds + 1
+txtRound.set('Round {:2}'.format(iRounds) )
 root.after(0, show_Roundtime,endTime)
 
 root.mainloop()
