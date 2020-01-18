@@ -29,7 +29,7 @@ class TimerState(Enum):
 		ROLL = 2
 		REST = 3
 
-class ButtonState(Enum)
+class ButtonState(Enum):
 		BUTTONPRESSED = False
 		BUTTONRELEASED = True
 #		BUTTONCOMMAND
@@ -58,12 +58,13 @@ def checkPushButton():
 			print('ROLL STATE')
 
 			hideEasterEgg()
-		else ##Times Was Running So Stop it
+		else:
+			#Times Was Running So Stop it
 			cState = TimerState.STOPPED ## Stop Timer
 			showEasterEgg()
 
 	## Set Button Released
-	elif (button_state == True and (bState == ButtonState.BUTTONPRESSED):
+	elif (button_state == True and (bState == ButtonState.BUTTONPRESSED)):
 		bState = ButtonState.BUTTONRELEASED
 		print('Button Released.')
 
