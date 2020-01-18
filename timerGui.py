@@ -79,6 +79,7 @@ def show_Resttime(endTime):
 		iRounds = iRounds + 1 ##Increment Number of Rounds
 		#txtRound.set('Round {:2}'.format(iRounds) )
 		showRound(iRounds)
+		hideEasterEgg()
 		root.after(1000, show_Roundtime,endTime)
 
 
@@ -86,7 +87,7 @@ def show_Roundtime(endTime):
 	##Set State Aesthetics
 	root.configure(background='black')
 	lbl.config(background="black",foreground="#81ced4")
-	hideEasterEgg()
+	
 	
 
 	# Get the time remaining until the event
@@ -159,17 +160,15 @@ showRound(iRounds)
 show_Roundtime(endTime)
 #root.after(0, show_Roundtime,)
 
-try:
-    while True:
-         button_state = GPIO.input(21)
-         if button_state == False:
-         	 showEasterEgg()
-             print('Button Pressed...')
-             time.sleep(0.2)
-         else:
-             hideEasterEgg()
-except:
-    GPIO.cleanup()
+while True:
+    button_state = GPIO.input(21)
+    if button_state == False:
+        showEasterEgg()
+        print('Button Pressed...')
+        #time.sleep(0.2)
+    else:
+        hideEasterEgg()
 
-
+    
 root.mainloop()
+GPIO.cleanup()
