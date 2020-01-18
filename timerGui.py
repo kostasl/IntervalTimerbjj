@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import RPi.GPIO as GPIO
 
 import pygame
 
@@ -20,6 +21,9 @@ global lblEasterEgg
 iRounds = 0 ##Count the number of rounds passed
 troundTime = 0.3 ##min
 trestTime = 0.21
+
+GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP)#Button to GPIO23
+
 
 def showEasterEgg():
 	global lblEasterEgg
@@ -152,5 +156,18 @@ endTime = datetime.now() + timedelta(minutes=troundTime,seconds=1)
 showRound(iRounds)
 show_Roundtime(endTime)
 #root.after(0, show_Roundtime,)
+
+try:
+    while True:
+         button_state = GPIO.input(23)
+         if button_state == False:
+             GPIO.output(24, True)
+             print('Button Pressed...')
+             time.sleep(0.2)
+         else:
+             GPIO.output(24, False)
+except:
+    GPIO.cleanup()
+
 
 root.mainloop()
