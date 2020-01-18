@@ -31,7 +31,12 @@ def show_Resttime(endTime):
 	lbl.config(background="blue",foreground="black")
     # Get the time remaining until the event
 	remainder = endTime - datetime.now()
-    # remove the microseconds part
+    
+	##play Time Approach beep
+	if (remainder.total_seconds() <= 10 ):
+		sndBeep.play()
+	
+	# remove the microseconds part
 	remainder = remainder - timedelta(microseconds=remainder.microseconds)
     # Show the time left on  the global label object
 	txt.set(formatTimerString(remainder))
@@ -51,17 +56,27 @@ def show_Roundtime(endTime):
 	##Set State Aesthetics
 	root.configure(background='black')
 	lbl.config(background="black",foreground="#81ced4")
+	
 
 	# Get the time remaining until the event
 	remainder = endTime - datetime.now()
+
     # remove the microseconds part
 	remainder = remainder - timedelta(microseconds=remainder.microseconds)
+	
+	##play Time Approach beep
+	if (remainder.total_seconds() <= 10 ):
+		sndBeep.play()
+	
 	# Show the time left on  the global label object
 	txt.set(formatTimerString(remainder))
 	print(remainder.total_seconds())
+
+
 	if (remainder.total_seconds() > 1):
 		# Trigger the countdown after 1000ms
 		root.after(1000, show_Roundtime,endTime)
+
 	else:
 		# Set the end date and time for the countdown
 		endTime = datetime.now() + timedelta(minutes=trestTime)
@@ -70,6 +85,7 @@ def show_Roundtime(endTime):
 
 
 pygame.init()
+sndBeep = pygame.mixer.Sound("res/beep.wav")
 sndParrol = pygame.mixer.Sound("res/parol.wav")
 sndCombat = pygame.mixer.Sound("res/combats.wav")
 
