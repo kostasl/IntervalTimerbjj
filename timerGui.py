@@ -17,14 +17,45 @@ global troundTime ##Duration of each round
 global trestTime ##Duration of each round
 global sndParrol,sndCombat
 global lblEasterEgg
+global cState ##Timer State
 
 iRounds = 0 ##Count the number of rounds passed
 troundTime = 0.3 ##min
 trestTime = 0.21
 
+from enum import Enum
+class TimerState(Enum):
+		STOPPED = 1
+		ROLL = 2
+		REST = 3
+		BUTTONPRESSED = 4
+
+cState = TimerState(1)
+
 ##Using Pin Names
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Button to GPIO21
+
+def checkPushButton():
+	button_state = GPIO.input(21)
+	if (button_state == False):
+		showEasterEgg()
+		print('Button Pressed...')
+		if (cState == TimerState.STOPPED):
+			cState = TimerState.ROLL ## Start Timer
+			# Set the end date and time for the countdown
+			endTime = datetime.now() + timedelta(minutes=troundTime,seconds=1)
+			showRound(iRounds)
+			show_Roundtime(endTime)
+
+			print('ROLL STATE')
+		elif (cState == TimerState.ROLL):
+			cState = TimerState.STOPPED
+        #time.sleep(0.2)
+	else:
+		hideEasterEgg()
+
+	root.after(20, checkPushButton())
 
 
 def showEasterEgg():
@@ -71,8 +102,9 @@ def show_Resttime(endTime):
 	txt.set(formatTimerString(remainder))
 
 	if (remainder.total_seconds() > 1):
-		# Trigger the countdown after 1000ms
-		root.after(1000, show_Resttime,endTime)
+		# Carry Rest CountDown If Timer Is not Stopped
+		if (cState != TimerState.STOPPED):
+			root.after(1000, show_Resttime,endTime)
 	else:
 		sndCombat.play()
 		endTime = datetime.now() + timedelta(minutes=troundTime)
@@ -80,7 +112,8 @@ def show_Resttime(endTime):
 		#txtRound.set('Round {:2}'.format(iRounds) )
 		showRound(iRounds)
 		hideEasterEgg()
-		root.after(1000, show_Roundtime,endTime)
+		if (cState != TimerState.STOPPED):
+			root.after(1000, show_Roundtime,endTime)
 
 
 def show_Roundtime(endTime):
@@ -105,7 +138,7 @@ def show_Roundtime(endTime):
 	
 	#print(remainder.total_seconds())
 
-	if (remainder.total_seconds() > 1):
+	if (remainder.total_seconds() > 1 and (cState == TimerState.ROLL)):
 		# Trigger the countdown after 1000ms
 		root.after(1000, show_Roundtime,endTime)
 
@@ -154,20 +187,11 @@ iRounds = iRounds + 1
 surface = pygame.Surface((800,600))
 pygame.draw.circle(surface,pygame.Color(250, 250, 250,200),(300, 60), 50, 10)
 
-# Set the end date and time for the countdown
-endTime = datetime.now() + timedelta(minutes=troundTime,seconds=1)
-showRound(iRounds)
-show_Roundtime(endTime)
 #root.after(0, show_Roundtime,)
 
-while True:
-    button_state = GPIO.input(21)
-    if button_state == False:
-        showEasterEgg()
-        print('Button Pressed...')
-        #time.sleep(0.2)
-    else:
-        hideEasterEgg()
+root.after(0, checkPushButton())
+
+
 
     
 root.mainloop()
