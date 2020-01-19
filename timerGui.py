@@ -204,7 +204,9 @@ def show_Roundtime(endTime):
 
 
 pygame.init()
-## Load Resources 
+## Load Resources
+## This pygame mixer method produces an unreliable output in Rasp Zero / vlc has been suggested as alternative
+pygame.mixer.init()
 sndBeep = pygame.mixer.Sound("res/beep.wav")
 sndParrol = pygame.mixer.Sound("res/parol.wav")
 sndCombat = pygame.mixer.Sound("res/combats.wav")
