@@ -1,5 +1,13 @@
 #!/usr/bin/python
-import RPi.GPIO as GPIO
+
+RPI_PLATFORM = True
+
+if RPI_PLATFORM:
+	try:
+		import RPi.GPIO as GPIO
+	except ImportError:
+		print("Not running on a Raspberry pi")
+		RPI_PLATFORM = False
 
 import pygame
 
@@ -34,38 +42,64 @@ class ButtonState(Enum):
 		BUTTONRELEASED = True
 #		BUTTONCOMMAND
 
-##Using Pin Names
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Button to GPIO21
 
 cState = TimerState(1)
-bState = ButtonState(GPIO.input(21))
+bState = ButtonState(True)
+
+##Using Pin Names
+if RPI_PLATFORM:
+	GPIO.setmode(GPIO.BCM)
+	GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Button to GPIO21
+	bState = ButtonState(GPIO.input(21))
+
+
+def quit(*args):
+	root.destroy()
+
+def stopTimer():
+	global cState
+	cState = TimerState.STOPPED
+	showEasterEgg()
+	print('STOP STATE')
+
+# Restarts Round
+def startTimer():
+	global cState
+	cState = TimerState.ROLL
+	endTime = datetime.now() + timedelta(minutes=troundTime, seconds=1)
+	showRound(iRounds)  ##Start The Timer
+	show_Roundtime(endTime)
+	print('ROLL STATE')
+	hideEasterEgg()
+
+
+# Keyboard Input / Toggle Time State
+def InputToggle(args):
+	global bState
+	global cState
+	print("Key Pressed")
+	if (cState == TimerState.STOPPED):
+		startTimer()
+	elif (cState == TimerState.ROLL):
+		stopTimer()
 
 
 ##Does Button Debounce Through Delay Read
 def checkPushButton():
 	global cState
 	global bState
-	button_state = GPIO.input(21)
+	button_state = not bState
+	if RPI_PLATFORM:
+		button_state = GPIO.input(21)
+
 	if (button_state == False and (bState == ButtonState.BUTTONRELEASED) ):
 		bState = ButtonState.BUTTONPRESSED
 		print('Button Pressed.')
 		## If Timer Was Stopped Then Button Should Start it 
 		if (cState == TimerState.STOPPED):
-			
-			cState = TimerState.ROLL 
-			endTime = datetime.now() + timedelta(minutes=troundTime,seconds=1)
-			showRound(iRounds) ##Start The Timer
-			show_Roundtime(endTime)
-
-			print('ROLL STATE')
-
-			hideEasterEgg()
+			startTimer()
 		else:
-			#Times Was Running So Stop it
-			cState = TimerState.STOPPED ## Stop Timer
-			showEasterEgg()
-
+			stopTimer()
 	## Set Button Released
 	elif (button_state == True and (bState == ButtonState.BUTTONPRESSED)):
 		bState = ButtonState.BUTTONRELEASED
@@ -89,15 +123,12 @@ def hideEasterEgg():
 
 def showRound(iRounds):
 	lblRound.pack()
-	lblRound.place(relx=0.8, rely=0.1, anchor=CENTER)
+	lblRound.place(relx=0.5, rely=0.7, anchor=CENTER)
 	txtRound.set('Round {:2}'.format(iRounds) )
 
 def formatTimerString(remainder):
 	return( '{:02}:{:02}'.format(int(remainder.total_seconds()/60), int(remainder.total_seconds())) )
 
-def quit(*args):
-    root.destroy()
-    
 def show_Resttime(endTime): 
     global iRounds
     ##Set State Aesthetics
@@ -182,7 +213,9 @@ sndCombat = pygame.mixer.Sound("res/combats.wav")
 # Use tkinter lib for showing the clock
 root = Tk()
 root.attributes("-fullscreen", True)
-root.bind("x", quit)
+root.bind("q", quit)
+root.bind("<space>", InputToggle)
+
 
 #Creates a Tkinter-compatible photo image, which can be used everywhere Tkinter expects an image object.
 imgEasterEgg  = ImageTk.PhotoImage(Image.open("res/mattbatten.jpeg") )
@@ -217,4 +250,5 @@ root.after(10, checkPushButton)
 
     
 root.mainloop()
-GPIO.cleanup()
+if (RPI_PLATFORM):
+	GPIO.cleanup()
