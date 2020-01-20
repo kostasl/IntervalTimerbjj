@@ -31,7 +31,7 @@ global cState ##Timer State
 
 iRounds = 0 ##Count the number of rounds passed
 troundTime = 0.3 ##min
-trestTime = 0.21
+trestTime = 1
 
 from enum import Enum
 class TimerState(Enum):
@@ -135,7 +135,8 @@ def showRound(iRounds):
 	txtRound.set('Round {:2}'.format(iRounds) )
 
 def formatTimerString(remainder):
-	return( '{:02}:{:02}'.format(int(remainder.total_seconds()/60), int(remainder.total_seconds())) )
+	minutes, seconds = divmod(remainder.total_seconds(), 60)
+	return( '{:02}:{:02}'.format(int(minutes  ), int(seconds) ) )
 
 def bgColourChange(col):
 	root.configure(background=_from_rgb(col))
@@ -162,14 +163,13 @@ def bgColourAnimate(i,dir):
 	bgColourChange( col_blue[i])
 	i=dir+i
 	if (cState == TimerState.REST):
-		root.after(300, bgColourAnimate, i,dir)
+		root.after(150, bgColourAnimate, i,dir)
 
 
 def show_Resttime(endTime):
 	global iRounds,cState
 
 	#	pygame.time.delay(200)
-
 	if (cState == TimerState.STOPPED):
 		return(0)
 
@@ -273,8 +273,8 @@ lbl.place(relx=0.5, rely=0.5, anchor=CENTER)
 ## Make Array of Colours For The Breathing/Rest Animation
 i=0
 col_blue = []
-while  (i < 11):
-	col_blue.append( tuple(round(i * 255) for i in colsys.hsv_to_rgb(205/360,0.4 + 0.6*i/10,1) ) )
+while  (i < 21):
+	col_blue.append( tuple(round(i * 255) for i in colsys.hsv_to_rgb(209/360,0.4 + 0.6*i/21,1) ) )
 	#print( col_blue[i] )
 	i += 1
 
