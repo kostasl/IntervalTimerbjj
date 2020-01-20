@@ -158,7 +158,7 @@ def bgColourAnimate(i,dir):
 	elif (i == 0):
 		dir=1 ##Up Again
 
-	print(i)
+	#print(i)
 	bgColourChange( col_blue[i])
 	i=dir+i
 	if (cState == TimerState.REST):
@@ -207,7 +207,8 @@ def show_Roundtime(endTime):
 	##Set State Aesthetics / Black BG
 	root.configure(background='black')
 	lbl.config(background="black",foreground="#81ced4")
-	
+	lblRound.config(background="black",foreground="#81ced4")
+
 	if (cState == TimerState.STOPPED):
 		return(0)
 
