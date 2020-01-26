@@ -236,9 +236,9 @@ def show_Roundtime(endTime):
 		endTime = datetime.now() + timedelta(minutes=trestTime)
 		sndParrol.play()
 		cState = TimerState.REST # Change Time Stater To REST
-		bgColourAnimate(0, 1)
+		
 		root.after(1000, show_Resttime,endTime)
-
+		root.after(1000, bgColourAnimate,0,1)
 
 pygame.init()
 ## Load Resources
