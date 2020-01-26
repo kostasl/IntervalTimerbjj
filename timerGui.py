@@ -122,7 +122,7 @@ def showEasterEgg():
 	#lblRound.pack_forget()
 	if (not lblEasterEgg.winfo_ismapped() ):
 		lblEasterEgg.pack()
-		lblEasterEgg.place(relx=0.01, rely=0.65, anchor=CENTER)
+		lblEasterEgg.place(relx=0.1, rely=0.70, anchor=CENTER)
 
 def hideEasterEgg():
 	global lblEasterEgg
