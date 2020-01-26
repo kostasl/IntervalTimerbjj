@@ -122,7 +122,7 @@ def showEasterEgg():
 	#lblRound.pack_forget()
 	if (not lblEasterEgg.winfo_ismapped() ):
 		lblEasterEgg.pack()
-		lblEasterEgg.place(relx=0.2, rely=0.45, anchor=CENTER)
+		lblEasterEgg.place(relx=0.01, rely=0.65, anchor=CENTER)
 
 def hideEasterEgg():
 	global lblEasterEgg
@@ -177,7 +177,7 @@ def show_Resttime(endTime):
 	remainder = endTime - datetime.now()
 
 	##play Time Approach beep
-	if (remainder.total_seconds() <= 10 and remainder.total_seconds() > 0 ):
+	if (remainder.total_seconds() <= 10 and remainder.total_seconds() > 1 ):
 		sndBeep.play()
 		showEasterEgg()
     
@@ -219,7 +219,7 @@ def show_Roundtime(endTime):
 	remainder = remainder - timedelta(microseconds=remainder.microseconds)
 
 	##play Time Approach beep
-	if (remainder.total_seconds() <= 10 and remainder.total_seconds() > 0  ):
+	if (remainder.total_seconds() <= 10 and remainder.total_seconds() > 1  ):
 		sndBeep.play()
 
 	# Show the time left on  the global label object
