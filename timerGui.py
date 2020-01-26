@@ -227,9 +227,11 @@ def show_Roundtime(endTime):
 	
 	#print(remainder.total_seconds())
 
-	if (remainder.total_seconds() > 1 and (cState == TimerState.ROLL)):
-		# Trigger the countdown after 1000ms
-		root.after(1000, show_Roundtime,endTime)
+	if (remainder.total_seconds() > 1 ): #and (cState == TimerState.ROLL)
+		# Carry Rest CountDown If Timer Is not Stopped
+		if (cState != TimerState.STOPPED):
+			# Trigger the countdown after 1000ms
+			root.after(1000, show_Roundtime,endTime)
 
 	else:
 		# Set the end date and time for the countdown
