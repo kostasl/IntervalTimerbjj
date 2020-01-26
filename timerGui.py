@@ -216,7 +216,7 @@ def show_Roundtime(endTime):
 	remainder = endTime - datetime.now() + timedelta(seconds=1)
 
     # remove the microseconds part
-	remainder = remainder - timedelta(microseconds=remainder.microseconds)
+	#remainder = remainder - timedelta(microseconds=remainder.microseconds)
 
 	##play Time Approach beep
 	if (remainder.total_seconds() <= 10 and remainder.total_seconds() > 1  ):
