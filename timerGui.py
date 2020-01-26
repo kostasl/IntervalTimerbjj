@@ -30,8 +30,8 @@ global lblEasterEgg
 global cState ##Timer State
 
 iRounds = 0 ##Count the number of rounds passed
-troundTime = 0.3 ##min
-trestTime = 0.2
+troundTime = 5 ##min
+trestTime = 1
 
 from enum import Enum
 class TimerState(Enum):
@@ -122,7 +122,7 @@ def showEasterEgg():
 	#lblRound.pack_forget()
 	if (not lblEasterEgg.winfo_ismapped() ):
 		lblEasterEgg.pack()
-		lblEasterEgg.place(relx=0.1, rely=0.70, anchor=CENTER)
+		lblEasterEgg.place(relx=0.13, rely=0.72, anchor=CENTER)
 
 def hideEasterEgg():
 	global lblEasterEgg
