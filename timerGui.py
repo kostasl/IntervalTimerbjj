@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 RPI_PLATFORM = True
+PIN_BUTTONA = 21
+PIN_BUTTONB = 16
 
 if RPI_PLATFORM:
 	try:
@@ -47,13 +49,15 @@ class ButtonState(Enum):
 
 
 cState = TimerState(1)
-bState = ButtonState(True)
+bStateA = ButtonState(True)
+bStateB = ButtonState(True) ##The Change Interval Button
 
 ##Using Pin Names
 if RPI_PLATFORM:
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Button to GPIO21
-	bState = ButtonState(GPIO.input(21))
+	bStateA = ButtonState(GPIO.input(21))
+	bStateB = ButtonState(GPIO.input(16))
 
 # convert colour from integer tuple to Hex Value string
 def _from_rgb(rgb):
@@ -111,7 +115,6 @@ def startTimer():
 
 # Keyboard Input / Toggle Time State
 def InputToggle(args):
-	global bState
 	global cState
 	print("Key Pressed")
 	if (cState == TimerState.STOPPED):
@@ -123,13 +126,15 @@ def InputToggle(args):
 ##Does Button Debounce Through Delay Read
 def checkPushButton():
 	global cState
-	global bState
-	button_state = not bState
+	global bStateA,bStateB
+	button_stateA = not bStateA
+	button_stateB = not bStateB
 	if RPI_PLATFORM:
-		button_state = GPIO.input(21)
+		button_stateA = GPIO.input(21) #Button A for Start/pause
+		button_stateB = GPIO.input(16) #Button B for Sw Interval
 
-	if (button_state == False and (bState == ButtonState.BUTTONRELEASED) ):
-		bState = ButtonState.BUTTONPRESSED
+	if (button_stateA == False and (bStateA == ButtonState.BUTTONRELEASED) ):
+		bStateA = ButtonState.BUTTONPRESSED
 		print('Button Pressed.')
 		## If Timer Was Stopped Then Button Should Start it 
 		if (cState == TimerState.STOPPED):
@@ -137,8 +142,8 @@ def checkPushButton():
 		else:
 			stopTimer()
 	## Set Button Released
-	elif (button_state == True and (bState == ButtonState.BUTTONPRESSED)):
-		bState = ButtonState.BUTTONRELEASED
+	elif (button_stateA == True and (bStateA == ButtonState.BUTTONPRESSED)):
+		bStateA = ButtonState.BUTTONRELEASED
 		print('Button Released.')
 
 	# Delay Recursive
