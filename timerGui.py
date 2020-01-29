@@ -32,6 +32,7 @@ global cState ##Timer State
 iRounds = 0 ##Count the number of rounds passed
 troundTime = 5 ##min
 trestTime = 1
+AFTER_ROUNDTMR = None
 
 from enum import Enum
 class TimerState(Enum):
@@ -61,12 +62,39 @@ def _from_rgb(rgb):
     return "#%02x%02x%02x" % rgb
 
 
+def changeInterval(*args):
+	global troundTime
+	stopTimer()
+	sndBeep.play()
+	print("Change Interval");
+
+	if (troundTime == 5):
+		troundTime = 3
+	else:
+		troundTime = 5
+
+	print("Change Interval to %(interval)d min" % {"interval":troundTime} );
+	resetTimer()
+
+	
+
 def quit(*args):
 	root.destroy()
 
-def stopTimer():
-	global cState
+def resetTimer():
+	global cState,AFTER_ROUNDTMR
+	root.after_cancel(AFTER_ROUNDTMR) ##Empty the call timer Queue
+
 	cState = TimerState.STOPPED
+	endTime = datetime.now() + timedelta(minutes=troundTime, seconds=1)
+	show_Roundtime(endTime)
+
+
+def stopTimer():
+	global cState,AFTER_ROUNDTMR
+	cState = TimerState.STOPPED
+	root.after_cancel(AFTER_ROUNDTMR)
+
 	showEasterEgg()
 	print('STOP STATE')
 
@@ -203,17 +231,18 @@ def show_Resttime(endTime):
 
 
 def show_Roundtime(endTime):
-	global cState
+	global cState,AFTER_ROUNDTMR
 	##Set State Aesthetics / Black BG
 	root.configure(background='black')
 	lbl.config(background="black",foreground="#81ced4")
 	lblRound.config(background="black",foreground="#81ced4")
 
-	if (cState == TimerState.STOPPED):
-		return(0)
+	remainder = timedelta(minutes=troundTime)
+	##If this was queued while time reset - then do not update the display 
+	if (cState != TimerState.STOPPED):
+		# Get the time remaining until the event
+		remainder = endTime - datetime.now() + timedelta(seconds=1)
 
-	# Get the time remaining until the event
-	remainder = endTime - datetime.now() + timedelta(seconds=1)
 
     # remove the microseconds part
 	#remainder = remainder - timedelta(microseconds=remainder.microseconds)
@@ -231,7 +260,7 @@ def show_Roundtime(endTime):
 		# Carry Rest CountDown If Timer Is not Stopped
 		if (cState != TimerState.STOPPED):
 			# Trigger the countdown after 1000ms
-			root.after(1000, show_Roundtime,endTime)
+			AFTER_ROUNDTMR = root.after(1000, show_Roundtime,endTime)
 
 	else:
 		# Set the end date and time for the countdown
@@ -255,6 +284,8 @@ sndCombat = pygame.mixer.Sound("res/combats.wav")
 root = Tk()
 root.attributes("-fullscreen", True)
 root.bind("q", quit)
+root.bind("t", changeInterval)
+
 root.bind("<space>", InputToggle)
 
 
