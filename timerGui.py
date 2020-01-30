@@ -38,9 +38,11 @@ global trestTime ##Duration of each round
 global sndParrol,sndCombat
 global lblEasterEgg
 global cState ##Timer State
-
+global canvas,canvImgLogo
 iRounds = 0 ##Count the number of rounds passed
-troundTime = 5 ##min
+
+troundIntervals = [0.2,3]
+troundTime = troundIntervals[1] ##min
 trestTime = 1
 AFTER_ROUNDTMR = None
 
@@ -57,8 +59,8 @@ class ButtonState(Enum):
 
 
 cState = TimerState(1)
-bStateA = ButtonState(True)
-bStateB = ButtonState(True) ##The Change Interval Button
+bStateA = ButtonState(False)
+bStateB = ButtonState(False) ##The Change Interval Button
 
 ##Using Pin Names
 if RPI_PLATFORM:
@@ -80,10 +82,10 @@ def changeInterval(*args):
 	sndBeep.play()
 	print("Change Interval");
 
-	if (troundTime == 5):
-		troundTime = 3
+	if (troundTime == troundIntervals[0]):
+		troundTime = troundIntervals[1]
 	else:
-		troundTime = 5
+		troundTime = troundIntervals[0]
 
 	print("Change Interval to %(interval)d min" % {"interval":troundTime} );
 	resetTimer()
@@ -183,7 +185,7 @@ def hideEasterEgg():
 
 def showRestMsg(iRounds):
 	lblRound.pack()
-	lblRound.place(relx=0.5, rely=0.7, anchor=CENTER)
+	lblRound.place(relx=0.5, rely=0.75, anchor=CENTER)
 	txtRound.set('Rest' ) #.format(iRounds+1)
 
 def showRound(iRounds):
@@ -197,6 +199,7 @@ def formatTimerString(remainder):
 
 def bgColourChange(col):
 	root.configure(background=_from_rgb(col))
+	canvas.configure(canvas,bg=_from_rgb(col)) #,foreground=_from_rgb(col)
 	lbl.config(background=_from_rgb (col),foreground="black")
 	lblRound.config(background=_from_rgb (col),foreground="black")
 
@@ -261,10 +264,17 @@ def show_Resttime(endTime):
 
 def show_Roundtime(endTime):
 	global cState,AFTER_ROUNDTMR
-	##Set State Aesthetics / Black BG
-	root.configure(background='black')
-	lbl.config(background="black",foreground="#81ced4")
-	lblRound.config(background="black",foreground="#81ced4")
+	
+	##Set State Aesthetics / Black BG /
+	##TODO : Transfer to Change BG Colour
+	#root.configure(background='black')
+	#lbl.config(background="black",foreground="#81ced4")
+	#lblRound.config(background="black",foreground="#81ced4")
+	#canvas.configure(canvas,bg=_from_rgb(col)) #,foreground=_from_rgb(col)
+	##Black BG, Neon Blue FG Text
+	bgColourChange((0,0,0))
+	lbl.config(foreground="#81ced4")
+	lblRound.config(foreground="#81ced4")
 
 	remainder = timedelta(minutes=troundTime)
 	##If this was queued while time reset - then do not update the display 
@@ -312,16 +322,23 @@ sndCombat = pygame.mixer.Sound("res/combats.wav")
 # Use tkinter lib for showing the clock
 root = Tk()
 root.attributes("-fullscreen", True)
+
+frame = Frame(root)
+frame.pack()
+
+##Connect to Key Button
 root.bind("q", quit)
 root.bind("t", changeInterval)
-
 root.bind("<space>", InputToggle)
 
 
 #Creates a Tkinter-compatible photo image, which can be used everywhere Tkinter expects an image object.
 imgEasterEgg  = ImageTk.PhotoImage(Image.open("res/mattbatten.jpeg") )
-#ImageTk.resize((450, 332), Image.ANTIALIAS) 
-imglogo = ImageTk.PhotoImage(Image.open("res/neonLogo.jpeg") )
+#
+ImageTkLogo = Image.open("res/neonLogo.png") 
+ImageTkLogo.resize((450, 450), Image.ANTIALIAS) 
+ImageTkLogo = ImageTkLogo.convert("RGBA")
+imglogo = ImageTk.PhotoImage(ImageTkLogo)
 
 
 ##Aesthetics 
@@ -329,8 +346,11 @@ fnt = font.Font(family='Verdana', size=80, weight='bold')
 fnts = font.Font(family='Verdana', size=60, weight='bold')
 txt = StringVar()
 lbl = ttk.Label(root, textvariable=txt, font=fnt, foreground="#81ced4", background="black")
-lbl.place(relx=0.5, rely=0.5, anchor=CENTER)
+lbl.place(relx=0.5, rely=0.55, anchor=CENTER)
 #hsv_to_rgb(h, s, v)    Convert the color from HSV coordinates to RGB coordinates.
+
+txtRound = StringVar()
+lblRound = ttk.Label(root, textvariable=txtRound, font=fnts, foreground="#81ced4" , background="black")
 
 ## Make Array of Colours For The Breathing/Rest Animation
 i=0
@@ -340,27 +360,27 @@ while  (i < 21):
 	#print( col_blue[i] )
 	i += 1
 
-txtRound = StringVar()
-lblRound = ttk.Label(root, textvariable=txtRound, font=fnts, foreground="#81ced4" , background="black")
-
 ##Add Logo To Center top
-lbllogo = ttk.Label(root, image=imglogo).pack(side="top")
+#lbllogo = ttk.Label(root, image=imglogo).pack(side="top")
+## I need this Canvas method so as to presenve PNG transparency - Removed Border
+canvas = Canvas(frame, bg="black", width=450, height=460,bd=0,highlightthickness=0,relief='ridge')
+canvas.pack()
+
+canvImgLogo = canvas.create_image(450/2, 225, anchor=CENTER, image=imglogo)
+
 
 lblEasterEgg = ttk.Label(root, image=imgEasterEgg) ##.pack(side="top")
 lblEasterEgg.pack_forget() ##Hide it
 ##Start The Round Timer recursive 
 iRounds = iRounds + 1
 
-## Not Used - Drawing
-#surface = pygame.Surface((800,600))
-#pygame.Color(250, 250, 250,200)
-#pygame.draw.circle(surface,col_blue[1],(300, 60), 50, 10)
-
-#root.after(0, show_Roundtime,)
-
+##Initialize Timer Display with default interval
+endTime = datetime.now() + timedelta(minutes=troundTime)
+AFTER_ROUNDTMR = root.after(0, show_Roundtime,endTime)
+resetTimer()
 root.after(10, checkPushButton)
 
-    
+#Loocking Loop
 root.mainloop()
 if (RPI_PLATFORM):
 	GPIO.cleanup()
