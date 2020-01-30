@@ -66,6 +66,7 @@ bStateB = ButtonState(False) ##The Change Interval Button
 if RPI_PLATFORM:
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Button to GPIO21
+	GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Button to GPIO21
 	bStateA = ButtonState(GPIO.input(21))
 	bStateB = ButtonState(GPIO.input(16))
 
