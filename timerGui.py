@@ -181,6 +181,11 @@ def hideEasterEgg():
 	lblEasterEgg.pack(side="bottom")
 	lblEasterEgg.pack_forget() ##Hide it
 
+def showRestMsg(iRounds):
+	lblRound.pack()
+	lblRound.place(relx=0.5, rely=0.7, anchor=CENTER)
+	txtRound.set('Rest' ) #.format(iRounds+1)
+
 def showRound(iRounds):
 	lblRound.pack()
 	lblRound.place(relx=0.5, rely=0.7, anchor=CENTER)
@@ -291,8 +296,8 @@ def show_Roundtime(endTime):
 		endTime = datetime.now() + timedelta(minutes=trestTime)
 		sndParrol.play()
 		cState = TimerState.REST # Change Time Stater To REST
-		
-		root.after(1000, show_Resttime,endTime)
+		showRestMsg(iRounds)
+		AFTER_ROUNDTMR = root.after(1000, show_Resttime,endTime)
 		root.after(1000, bgColourAnimate,0,1)
 
 pygame.init()
@@ -346,9 +351,10 @@ lblEasterEgg.pack_forget() ##Hide it
 ##Start The Round Timer recursive 
 iRounds = iRounds + 1
 
-surface = pygame.Surface((800,600))
+## Not Used - Drawing
+#surface = pygame.Surface((800,600))
 #pygame.Color(250, 250, 250,200)
-pygame.draw.circle(surface,col_blue[1],(300, 60), 50, 10)
+#pygame.draw.circle(surface,col_blue[1],(300, 60), 50, 10)
 
 #root.after(0, show_Roundtime,)
 
