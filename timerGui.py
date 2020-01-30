@@ -90,7 +90,7 @@ def resetTimer():
 	root.after_cancel(AFTER_ROUNDTMR) ##Empty the call timer Queue
 
 	cState = TimerState.STOPPED
-	endTime = datetime.now() + timedelta(minutes=troundTime, seconds=1)
+	endTime = datetime.now() + timedelta(minutes=troundTime, seconds=0)
 	show_Roundtime(endTime)
 
 
@@ -106,11 +106,12 @@ def stopTimer():
 def startTimer():
 	global cState
 	cState = TimerState.ROLL
-	endTime = datetime.now() + timedelta(minutes=troundTime, seconds=1)
+	endTime = datetime.now() + timedelta(minutes=troundTime, seconds=0)
 	showRound(iRounds)  ##Start The Timer
 	show_Roundtime(endTime)
 	print('ROLL STATE')
 	hideEasterEgg()
+	sndCombat.play()
 
 
 # Keyboard Input / Toggle Time State
@@ -133,9 +134,10 @@ def checkPushButton():
 		button_stateA = GPIO.input(21) #Button A for Start/pause
 		button_stateB = GPIO.input(16) #Button B for Sw Interval
 
+	##Check If Button Changed State - Now Pressed
 	if (button_stateA == False and (bStateA == ButtonState.BUTTONRELEASED) ):
 		bStateA = ButtonState.BUTTONPRESSED
-		print('Button Pressed.')
+		print('Button A Pressed.')
 		## If Timer Was Stopped Then Button Should Start it 
 		if (cState == TimerState.STOPPED):
 			startTimer()
@@ -144,8 +146,17 @@ def checkPushButton():
 	## Set Button Released
 	elif (button_stateA == True and (bStateA == ButtonState.BUTTONPRESSED)):
 		bStateA = ButtonState.BUTTONRELEASED
-		print('Button Released.')
+		print('Button A Released.')
 
+	##Check If Button B Changed State
+	if (button_stateB == False and (bStateB == ButtonState.BUTTONRELEASED) ):
+		bStateB = ButtonState.BUTTONPRESSED
+		print('Button B Pressed.')
+		changeInterval()
+	elif (button_stateB == True and (bStateB == ButtonState.BUTTONPRESSED)):
+		bStateB = ButtonState.BUTTONRELEASED
+		print('Button B Released.')
+	
 	# Delay Recursive
 	root.after(100, checkPushButton)
 
@@ -212,7 +223,7 @@ def show_Resttime(endTime):
 	##play Time Approach beep
 	if (remainder.total_seconds() <= 10 and remainder.total_seconds() > 1 ):
 		sndBeep.play()
-		showEasterEgg()
+		#showEasterEgg()
     
     # remove the microseconds part
     #remainder = remainder - timedelta(microseconds=remainder.microseconds)
