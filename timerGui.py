@@ -41,7 +41,7 @@ global cState ##Timer State
 global canvas,canvImgLogo
 iRounds = 0 ##Count the number of rounds passed
 
-troundIntervals = [0.2,3]
+troundIntervals = [5,3]
 troundTime = troundIntervals[1] ##min
 trestTime = 1
 AFTER_ROUNDTMR = None
@@ -364,10 +364,10 @@ while  (i < 21):
 ##Add Logo To Center top
 #lbllogo = ttk.Label(root, image=imglogo).pack(side="top")
 ## I need this Canvas method so as to presenve PNG transparency - Removed Border
-canvas = Canvas(frame, bg="black", width=450, height=460,bd=0,highlightthickness=0,relief='ridge')
+canvas = Canvas(frame, bg="black", width=950, height=950,bd=0,highlightthickness=0,relief='ridge')
 canvas.pack()
 
-canvImgLogo = canvas.create_image(450/2, 225, anchor=CENTER, image=imglogo)
+canvImgLogo = canvas.create_image(950/2, 225, anchor=CENTER, image=imglogo)
 
 
 lblEasterEgg = ttk.Label(root, image=imgEasterEgg) ##.pack(side="top")
