@@ -186,12 +186,12 @@ def hideEasterEgg():
 
 def showRestMsg(iRounds):
 	lblRound.pack()
-	lblRound.place(relx=0.5, rely=0.75, anchor=CENTER)
+	lblRound.place(relx=0.5, rely=0.9, anchor=CENTER)
 	txtRound.set('Rest' ) #.format(iRounds+1)
 
 def showRound(iRounds):
 	lblRound.pack()
-	lblRound.place(relx=0.5, rely=0.7, anchor=CENTER)
+	lblRound.place(relx=0.5, rely=0.9, anchor=CENTER)
 	txtRound.set('Round {:2}'.format(iRounds) )
 
 def formatTimerString(remainder):
@@ -347,7 +347,7 @@ fnt = font.Font(family='Verdana', size=80, weight='bold')
 fnts = font.Font(family='Verdana', size=60, weight='bold')
 txt = StringVar()
 lbl = ttk.Label(root, textvariable=txt, font=fnt, foreground="#81ced4", background="black")
-lbl.place(relx=0.5, rely=0.55, anchor=CENTER)
+lbl.place(relx=0.5, rely=0.75, anchor=CENTER)
 #hsv_to_rgb(h, s, v)    Convert the color from HSV coordinates to RGB coordinates.
 
 txtRound = StringVar()
