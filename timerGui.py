@@ -1,8 +1,16 @@
 #!/usr/bin/python
+### An Interval timer customized for BJJ and my gym: Neon Martial Arts Southampton UK
+### KONTANTINOS LAGOGIANNIS 2020 - 
+### It is meant to run on a mini computer like the Raspberry Pi Zero, connected to a screen
+### It plays a set of recorded sounds to indicate time tick (beep), Start of round ("Combats"), And end of Round "Parol", with 
+### my voice immitating the way our coach Trevor Birmingham does it.
+### I hope this is useful to others in the Bjj community as it allows for an affordable and nice timer to run in your gym, with 
+### only a TV with HDMI and a Raspberry PI zero, plus a simple (custom made), 2 button interface that you need to connect to 2 GPIO PINS (see below)
+##
 
 RPI_PLATFORM = True
-PIN_BUTTONA = 21
-PIN_BUTTONB = 16
+PIN_BUTTONA = 21 ##The Button TO start Stop the timer
+PIN_BUTTONB = 16 ## Button To toggle the round interval time from 3 to 5 minutes
 
 if RPI_PLATFORM:
 	try:
