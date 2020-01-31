@@ -311,6 +311,14 @@ def show_Roundtime(endTime):
 		AFTER_ROUNDTMR = root.after(1000, show_Resttime,endTime)
 		root.after(1000, bgColourAnimate,0,1)
 
+print("### BJJ timer for Neon Martial Arts Gym Southampton ")
+print("### Made by KONTANTINOS LAGOGIANNIS 2020, costaslag@gmail.com ")
+
+print("Make sure your screen saver is off ")
+#$sudo xset s off
+#$ sudo xset -dpms
+#$ sudo xset s noblank
+
 pygame.init()
 ## Load Resources
 ## This pygame mixer method produces an unreliable output in Rasp Zero / vlc has been suggested as alternative
