@@ -20,6 +20,7 @@ if RPI_PLATFORM:
 		RPI_PLATFORM = False
 
 import pygame
+import os, subprocess
 
 from tkinter import *
 from tkinter import ttk
@@ -124,6 +125,8 @@ def startTimer():
 	print('ROLL STATE')
 	hideEasterEgg()
 	sndCombat.play()
+	#Wake up Screen Saver
+	subprocess.call('xset dpms force on', shell=True)
 
 
 # Keyboard Input / Toggle Time State
