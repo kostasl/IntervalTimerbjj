@@ -42,6 +42,7 @@ global canvas,canvImgLogo
 iRounds = 0 ##Count the number of rounds passed
 
 troundIntervals = [5,3]
+tRestIntervals = [1,0.5]
 troundTime = troundIntervals[1] ##min
 trestTime = 1
 AFTER_ROUNDTMR = None
