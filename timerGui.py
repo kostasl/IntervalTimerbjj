@@ -49,8 +49,9 @@ iRounds = 0 ##Count the number of rounds passed
 
 troundIntervals = [5,3]
 tRestIntervals = [1,0.5]
-troundTime = troundIntervals[1] ##min
-trestTime = 1
+troundTime = troundIntervals[0] ##min
+trestTime = tRestIntervals[0]
+##Handle to RoundTimer root.after call
 AFTER_ROUNDTMR = None
 
 from enum import Enum
