@@ -12,7 +12,7 @@
 ## pygame
 ## tkinter
 ## Keyboard GPIO connected 2 Buttons
-
+STR_VER = "0.1 beta"
 RPI_PLATFORM = True
 PIN_BUTTONA = 21 ##The Button TO start Stop the timer
 PIN_BUTTONB = 16 ## Button To toggle the round interval time from 3 to 5 minutes
@@ -259,7 +259,7 @@ def show_Resttime(endTime):
     # remove the microseconds part
     #remainder = remainder - timedelta(microseconds=remainder.microseconds)
 # Show the time left on  the global label object
-	txt.set(formatTimerString(remainder))
+	txtTime.set(formatTimerString(remainder))
 
 	if (remainder.total_seconds() > 1):
 			# Carry Rest CountDown If Timer Is not Stopped
@@ -306,7 +306,7 @@ def show_Roundtime(endTime):
 		sndBeep.play()
 
 	# Show the time left on  the global label object
-	txt.set(formatTimerString(remainder))
+	txtTime.set(formatTimerString(remainder))
 	
 	#print(remainder.total_seconds())
 
@@ -372,13 +372,23 @@ imglogo = ImageTk.PhotoImage(ImageTkLogo)
 ##Aesthetics 
 fnt = font.Font(family='Verdana', size=80, weight='bold')
 fnts = font.Font(family='Verdana', size=60, weight='bold')
-txt = StringVar()
-lbl = ttk.Label(root, textvariable=txt, font=fnt, foreground="#81ced4", background="black")
+fnt_small = font.Font(family='Verdana', size=16, weight='normal')
+
+
+### Time Left Label
+txtTime = StringVar()
+txtTime.set("-: NeonPi Bjj Timer :-") ##Does not Show
+lbl = ttk.Label(root, textvariable=txtTime, font=fnt, foreground="#81ced4", background="black")
 lbl.place(relx=0.5, rely=0.75, anchor=CENTER)
 #hsv_to_rgb(h, s, v)    Convert the color from HSV coordinates to RGB coordinates.
-
+### Number of Rounds Label
 txtRound = StringVar()
 lblRound = ttk.Label(root, textvariable=txtRound, font=fnts, foreground="#81ced4" , background="black")
+
+txtCredits = StringVar()
+txtCredits.set("NeonPi Bjj Timer V{:1} \nhttps://github.com/kostasl/".format(STR_VER))
+lblCredits = ttk.Label(root, textvariable=txtCredits, font=fnt_small, foreground="#81ced4" , background="black")
+lblCredits.place(relx=0.8, rely=0.85, anchor=CENTER)
 
 ## Make Array of Colours For The Breathing/Rest Animation
 i=0
