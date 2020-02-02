@@ -85,7 +85,7 @@ def _from_rgb(rgb):
 
 
 def changeInterval(*args):
-	global troundTime
+	global troundTime,trestTime
 	stopTimer()
 	sndBeep.play()
 	print("Changed Interval");
