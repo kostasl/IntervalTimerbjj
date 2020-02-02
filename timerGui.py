@@ -121,6 +121,10 @@ def stopTimer():
 	root.after_cancel(AFTER_ROUNDTMR)
 
 	showEasterEgg()
+	
+	##Reset Display
+	root.after(1500,resetTimer)
+
 	print('STOP STATE')
 
 # Restarts Round
@@ -144,9 +148,10 @@ def InputToggle(args):
 	if (cState == TimerState.STOPPED):
 		startTimer()
 	elif (cState == TimerState.ROLL or cState == TimerState.REST):
+		##Stops And Resets Display
 		stopTimer()
-		##Reset Display
-		root.after(1500,resetTimer)
+		
+
 
 
 ##Does Button Debounce Through Delay Read
