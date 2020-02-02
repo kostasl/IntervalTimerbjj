@@ -7,6 +7,11 @@
 ### I hope this is useful to others in the Bjj community as it allows for an affordable and nice timer to run in your gym, with 
 ### only a TV with HDMI and a Raspberry PI zero, plus a simple (custom made), 2 button interface that you need to connect to 2 GPIO PINS (see below)
 ##
+## Requires:
+## x11-xserver-utils
+## pygame
+## tkinter
+## Keyboard GPIO connected 2 Buttons
 
 RPI_PLATFORM = True
 PIN_BUTTONA = 21 ##The Button TO start Stop the timer
@@ -67,10 +72,10 @@ bStateB = ButtonState(False) ##The Change Interval Button
 ##Using Pin Names
 if RPI_PLATFORM:
 	GPIO.setmode(GPIO.BCM)
-	GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Button to GPIO21
-	GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Button to GPIO21
-	bStateA = ButtonState(GPIO.input(21))
-	bStateB = ButtonState(GPIO.input(16))
+	GPIO.setup(PIN_BUTTONA, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Button to GPIO21
+	GPIO.setup(PIN_BUTTONB, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Button to GPIO21
+	bStateA = ButtonState(GPIO.input(PIN_BUTTONA))
+	bStateB = ButtonState(GPIO.input(PIN_BUTTONB))
 
 # convert colour from integer tuple to Hex Value string
 def _from_rgb(rgb):
@@ -83,12 +88,14 @@ def changeInterval(*args):
 	global troundTime
 	stopTimer()
 	sndBeep.play()
-	print("Change Interval");
+	print("Changed Interval");
 
 	if (troundTime == troundIntervals[0]):
 		troundTime = troundIntervals[1]
+		trestTime = tRestIntervals[1]
 	else:
 		troundTime = troundIntervals[0]
+		trestTime = tRestIntervals[0]
 
 	print("Change Interval to %(interval)d min" % {"interval":troundTime} );
 	resetTimer()
@@ -132,11 +139,13 @@ def startTimer():
 # Keyboard Input / Toggle Time State
 def InputToggle(args):
 	global cState
-	print("Key Pressed")
+	print("Timer Keyboard pressed")
 	if (cState == TimerState.STOPPED):
 		startTimer()
 	elif (cState == TimerState.ROLL or cState == TimerState.REST):
 		stopTimer()
+		##Reset Display
+		root.after(1500,resetTimer)
 
 
 ##Does Button Debounce Through Delay Read
@@ -146,8 +155,8 @@ def checkPushButton():
 	button_stateA = not bStateA
 	button_stateB = not bStateB
 	if RPI_PLATFORM:
-		button_stateA = GPIO.input(21) #Button A for Start/pause
-		button_stateB = GPIO.input(16) #Button B for Sw Interval
+		button_stateA = GPIO.input(PIN_BUTTONA) #Button A for Start/pause
+		button_stateB = GPIO.input(PIN_BUTTONB) #Button B for Sw Interval
 
 	##Check If Button Changed State - Now Pressed
 	if (button_stateA == False and (bStateA == ButtonState.BUTTONRELEASED) ):
@@ -181,7 +190,7 @@ def showEasterEgg():
 	#lblRound.pack_forget()
 	if (not lblEasterEgg.winfo_ismapped() ):
 		lblEasterEgg.pack()
-		lblEasterEgg.place(relx=0.13, rely=0.72, anchor=CENTER)
+		lblEasterEgg.place(relx=0.20, rely=0.72, anchor=CENTER)
 
 def hideEasterEgg():
 	global lblEasterEgg
@@ -327,9 +336,14 @@ pygame.init()
 ## Load Resources
 ## This pygame mixer method produces an unreliable output in Rasp Zero / vlc has been suggested as alternative
 pygame.mixer.init()
+
+## Sound for beep every sec on last 10 Seconds before timeout
 sndBeep = pygame.mixer.Sound("res/beep.wav")
-sndParrol = pygame.mixer.Sound("res/parol.wav")
-sndCombat = pygame.mixer.Sound("res/combats.wav")
+## Sounds for Start End Of Round  Optional Speaking 
+#pygame.mixer.Sound("res/parol.wav")
+#pygame.mixer.Sound("res/combats.wav")
+sndParrol = pygame.mixer.Sound("res/beep3P.wav") 
+sndCombat = pygame.mixer.Sound("res/beep2P.wav")
 
 
 # Use tkinter lib for showing the clock
