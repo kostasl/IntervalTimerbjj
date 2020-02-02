@@ -205,12 +205,12 @@ def hideEasterEgg():
 
 def showRestMsg(iRounds):
 	lblRound.pack()
-	lblRound.place(relx=0.5, rely=0.9, anchor=CENTER)
+	lblRound.place(relx=0.5, rely=0.87, anchor=CENTER)
 	txtRound.set('Rest' ) #.format(iRounds+1)
 
 def showRound(iRounds):
 	lblRound.pack()
-	lblRound.place(relx=0.5, rely=0.9, anchor=CENTER)
+	lblRound.place(relx=0.5, rely=0.87, anchor=CENTER)
 	txtRound.set('Round {:2}'.format(iRounds) )
 
 def formatTimerString(remainder):
@@ -377,7 +377,7 @@ imglogo = ImageTk.PhotoImage(ImageTkLogo)
 ##Aesthetics 
 fnt = font.Font(family='Verdana', size=80, weight='bold')
 fnts = font.Font(family='Verdana', size=60, weight='bold')
-fnt_small = font.Font(family='Verdana', size=16, weight='normal')
+fnt_small = font.Font(family='Verdana', size=15, weight='normal')
 
 
 ### Time Left Label
@@ -391,9 +391,9 @@ txtRound = StringVar()
 lblRound = ttk.Label(root, textvariable=txtRound, font=fnts, foreground="#81ced4" , background="black")
 
 txtCredits = StringVar()
-txtCredits.set("NeonPi Bjj Timer V{:1} \nhttps://github.com/kostasl/".format(STR_VER))
+txtCredits.set("NeonPi Bjj Timer V{:1}\nhttps://github.com/kostasl/".format(STR_VER))
 lblCredits = ttk.Label(root, textvariable=txtCredits, font=fnt_small, foreground="#81ced4" , background="black")
-lblCredits.place(relx=0.8, rely=0.85, anchor=CENTER)
+lblCredits.place(relx=0.5, rely=0.95, anchor=CENTER)
 
 ## Make Array of Colours For The Breathing/Rest Animation
 i=0
