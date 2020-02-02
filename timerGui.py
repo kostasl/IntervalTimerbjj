@@ -377,7 +377,7 @@ imglogo = ImageTk.PhotoImage(ImageTkLogo)
 ##Aesthetics 
 fnt = font.Font(family='Verdana', size=80, weight='bold')
 fnts = font.Font(family='Verdana', size=60, weight='bold')
-fnt_small = font.Font(family='Verdana', size=15, weight='normal')
+fnt_small = font.Font(family='Courier', size=13, weight='normal')
 
 
 ### Time Left Label
