@@ -3,14 +3,6 @@ import board
 import adafruit_dht
 
 # Initial the dht device, with data pin connected to:
-<<<<<<< HEAD
-##GPIO pin 4 (Pin N 7)
-dhtDevice = adafruit_dht.DHT22(board.D4)
-
-while True:
-    try:
-#        dhtDevice = adafruit_dht.DHT22(board.D4)
-=======
 dhtDevice = adafruit_dht.DHT22(board.D7)
 
 while True:
