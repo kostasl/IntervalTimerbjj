@@ -21,14 +21,14 @@ PIN_DHTSENSOR = 4 ##GPIO PIN On Connecting Datapin of DHT AM2302 sensor
 global THsensor
 
 if RPI_PLATFORM:
-	try:
+#	try:
 		import RPi.GPIO as GPIO
 		import Adafruit_DHT as TSens
 		THsensor = TSens.AM2302
-	except ImportError:
-		print(ImportError)
-		print("Not running on a Raspberry pi")
-		RPI_PLATFORM = False
+#	except ImportError:
+#		print(ImportError)
+#		print("Not running on a Raspberry pi")
+#		RPI_PLATFORM = False
 
 
 
