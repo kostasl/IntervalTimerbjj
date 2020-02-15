@@ -24,11 +24,11 @@ if RPI_PLATFORM:
 	try:
 		import RPi.GPIO as GPIO
 		import Adafruit_DHT as TSens
-		THsensor = Adafruit_DHT.AM2302
+		THsensor = TSens.AM2302
 	except ImportError:
+		print(ImportError)
 		print("Not running on a Raspberry pi")
 		RPI_PLATFORM = False
-
 
 
 
