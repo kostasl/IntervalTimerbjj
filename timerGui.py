@@ -101,7 +101,7 @@ def _from_rgb(rgb):
 # Try to grab a sensor reading.  Use the read_retry method which will retry up
 # to 15 times to get a sensor reading (waiting 2 seconds between each retry).
 def readTempHumidity():
-	humidity, temperature = Adafruit_DHT.read_retry(THsensor, PIN_DHTSENSOR)
+	humidity, temperature = TSens.read_retry(THsensor, PIN_DHTSENSOR)
 	if humidity is not None and temperature is not None:
 		print("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
 		txtCredits.set("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))

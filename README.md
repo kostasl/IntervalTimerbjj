@@ -25,6 +25,11 @@ I used tkinter for interface design, and pygame for sound playback.
 * pip3 install Pygame
 * Adafruit library (Either Option):
     * (Deprecated) sudo pip install Adafruit_DHT
+    * OR : git clone https://github.com/adafruit/Adafruit_Python_DHT.git
+    * cd Adafruit_Python_DHT
+    * sudo apt-get install build-essential python-dev
+    * sudo python setup.py install /sudo python3 setup.py install
+    
 This one can be run by sudo from any user   
 Or:
     * (Newer) pip3 install adafruit-circuitpython-dht
