@@ -19,6 +19,21 @@ I used tkinter for interface design, and pygame for sound playback.
 ##Issues:
  Pygame  appears to not be very reliable on the pi Zero and sounds breakup or do not synchronize.
 
+## Installation :
+*sudo apt-get update
+*sudo apt-get install python3-pip
+* pip3 install Pygame
+* Adafruit library (Either Option):
+    * (Deprecated) sudo pip install Adafruit_DHT
+This one can be run by sudo from any user   
+Or:
+    * (Newer) pip3 install adafruit-circuitpython-dht
+    * sudo apt-get install libgpiod2
+this one seems to work only for user pi.
+In any case add user to the gpio group:
+groupadd <user> gpio
+ 
+
 ##Oss!
 ### Konstantinos Lagogiannis 2020
 

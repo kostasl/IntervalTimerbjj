@@ -16,13 +16,17 @@ STR_VER = "0.1 beta"
 RPI_PLATFORM = True
 PIN_BUTTONA = 21 ##The Button TO start Stop the timer
 PIN_BUTTONB = 16 ## Button To toggle the round interval time from 3 to 5 minutes
+PIN_DHTSENSOR = 4 ##GPIO PIN On Connecting Datapin of DHT AM2302 sensor
 
 if RPI_PLATFORM:
 	try:
 		import RPi.GPIO as GPIO
+		import Adafruit_DHT as TSens
 	except ImportError:
 		print("Not running on a Raspberry pi")
 		RPI_PLATFORM = False
+
+THsensor = Adafruit_DHT.AM2302
 
 import pygame
 import os, subprocess
@@ -54,6 +58,7 @@ trestTime = tRestIntervals[0]
 ##Handle to RoundTimer root.after call
 AFTER_ROUNDTMR = None
 
+
 from enum import Enum
 class TimerState(Enum):
 		STOPPED = 1
@@ -70,6 +75,8 @@ cState = TimerState(1)
 bStateA = ButtonState(False)
 bStateB = ButtonState(False) ##The Change Interval Button
 
+
+
 ##Using Pin Names
 if RPI_PLATFORM:
 	GPIO.setmode(GPIO.BCM)
@@ -78,12 +85,24 @@ if RPI_PLATFORM:
 	bStateA = ButtonState(GPIO.input(PIN_BUTTONA))
 	bStateB = ButtonState(GPIO.input(PIN_BUTTONB))
 
+
 # convert colour from integer tuple to Hex Value string
 def _from_rgb(rgb):
     #"""translates an rgb tuple of int to a tkinter friendly color code
     #"""
     return "#%02x%02x%02x" % rgb
 
+
+# Try to grab a sensor reading.  Use the read_retry method which will retry up
+# to 15 times to get a sensor reading (waiting 2 seconds between each retry).
+def readTempHumidity()
+	humidity, temperature = Adafruit_DHT.read_retry(THsensor, PIN_DHTSENSOR)
+	if humidity is not None and temperature is not None:
+    	print("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
+	else:
+    	print('Failed to get reading. Try again!')
+	root.after(3500, readTempHumidity)
+	return humidity,temperature
 
 def changeInterval(*args):
 	global troundTime,trestTime
@@ -422,6 +441,10 @@ endTime = datetime.now() + timedelta(minutes=troundTime)
 AFTER_ROUNDTMR = root.after(0, show_Roundtime,endTime)
 resetTimer()
 root.after(10, checkPushButton)
+
+##Start the Temp Humidity Loop
+if (RPI_PLATFORM)
+	root.after(10, readTempHumidity)
 
 #Loocking Loop
 root.mainloop()
