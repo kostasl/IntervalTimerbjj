@@ -27,6 +27,7 @@ global dhtDevice ##For the New Adafruit Lib
 if RPI_PLATFORM:
 	try:
 		import RPi.GPIO as GPIO
+		print("[Info] RPi.GPIO library found.")
 	except ImportError  as error:
 		#print(ImportError.args)
 		print("[Import Error] Import of GPIO library failed. Maybe not running on a Raspberry pi or RPi.GPIO not installed")
@@ -36,9 +37,9 @@ if RPI_PLATFORM:
 try:
 	import Adafruit_DHT as TSens
 	THsensor = TSens.AM2302
+	print("[Info] Found legacy Adafruit_DHT library ")
 except ImportError as error:
-	#print(ImportError.args)
-	print("[Import Error] DHT 22 Sensor Not accessible. Install Adafruit_DHT library")
+	print("[Warning] Legacy Adafruit_DHT library not installed")
 	DHT_SENSOR = False
 
 ##Check Adafruit Modern Library
@@ -47,12 +48,12 @@ try:
 	import adafruit_dht
 	DHT_SENSOR_NEW = True
 	DHT_SENSOR = False ## Do not Use Legacy One
-
+	print("[Info] Found adafruit_dht library ")
 	# Initial the dht device, with data pin connected to:
 	dhtDevice = adafruit_dht.DHT22(board.D4)
 
 except ImportError as error:
-	print("[Import Error]  adafruit-circuitpython-dh Library Failed. Install adafruit-circuitpython-dh library")
+	print("[Warning]  adafruit-circuitpython-dh Library not found. ")
 	DHT_SENSOR_NEW = False
 
 import pygame
