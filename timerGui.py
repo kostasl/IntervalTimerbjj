@@ -148,7 +148,7 @@ def readTempHumidity():
 	else:
 		print('Failed to get reading. Try again!')
 		txtCredits.set(strerror)
-		root.after(10, readTempHumidity)
+		root.after(100, readTempHumidity)
 
 
 	return humidity,temperature
