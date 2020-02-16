@@ -49,7 +49,7 @@ try:
 	DHT_SENSOR_NEW = True
 	DHT_SENSOR = False ## Do not Use Legacy One
 	print("[Info] Found adafruit_dht library ")
-	# Initial the dht device, with data pin connected to:
+	# Initial the dht device, with data pin connected to GPIO 4:
 	dhtDevice = adafruit_dht.DHT22(board.D4)
 
 except ImportError as error:
@@ -126,6 +126,7 @@ def _from_rgb(rgb):
 def readTempHumidity():
 	temperature = None
 	humidity = None
+	strerror = ""
 	try:
 		if (DHT_SENSOR_NEW):
 			# Print the values to the serial port
@@ -137,14 +138,16 @@ def readTempHumidity():
 	except RuntimeError as error:
 			# Errors happen fairly often, DHT's are hard to read, just keep going
 			print(error.args[0])
+			strerror = error.args[0]
 
 	if humidity is not None and temperature is not None:
 		print("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
 		txtCredits.set("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
 	else:
 		print('Failed to get reading. Try again!')
+		txtCredits.set(strerror)
 
-	root.after(3500, readTempHumidity)
+	root.after(1500, readTempHumidity)
 	return humidity,temperature
 
 def changeInterval(*args):
