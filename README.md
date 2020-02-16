@@ -20,24 +20,53 @@ I used tkinter for interface design, and pygame for sound playback.
  Pygame  appears to not be very reliable on the pi Zero and sounds breakup or do not synchronize.
 
 ## Installation :
-*sudo apt-get update
-*sudo apt-get install python3-pip
-* pip3 install Pygame
-* Adafruit library (Either Option):
-    * (Deprecated) sudo pip install Adafruit_DHT
-    * OR : git clone https://github.com/adafruit/Adafruit_Python_DHT.git
+<code>
+sudo apt-get update  
+sudo apt-get install python3-pip    
+</code>
+
+Install virtual environment, cd into IntervalTimerbjj:  
+<code> 
+python3 -m pip install --user virtualenv  
+python3 -m venv env  
+source env/bin/activate  
+</code>
+
+ImageTK  and pygame:   
+<code>
+pip3 install pygame  
+sudo apt-get install python3-pil.imagetk  
+pip3 install Pillow  
+</code>
+
+library for GPIO access to input buttons:  
+<code>
+pip3 install RPi.GPIO
+</code>
+
+Adafruit library for temperature and humidity sensor (Either Option):
+* Deprecated version that still works:
+    <code>
+    sudo pip3 install Adafruit_DHT
+    </code>
+    Manual Installation:  
+    <code>
+    git clone https://github.com/adafruit/Adafruit_Python_DHT.git  
     * cd Adafruit_Python_DHT
     * sudo apt-get install build-essential python-dev
     * sudo python setup.py install /sudo python3 setup.py install
-    
-This one can be run by sudo from any user   
-Or:
-    * (Newer) pip3 install adafruit-circuitpython-dht
-    * sudo apt-get install libgpiod2
+    </code>
+This one can be run by sudo from any user
+   
+More recent version, with which I had trouble using:  
+<code>
+pip3 install adafruit-circuitpython-dht
+sudo apt-get install libgpiod2
+<\code>
 this one seems to work only for user pi.
 In any case add user to the gpio group:
 groupadd <user> gpio
- 
+
 
 ##Oss!
 ### Konstantinos Lagogiannis 2020

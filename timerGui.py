@@ -14,6 +14,7 @@
 ## Keyboard GPIO connected 2 Buttons
 STR_VER = "0.1 beta"
 RPI_PLATFORM = True
+DHT_SENSOR = True
 PIN_BUTTONA = 21 ##The Button TO start Stop the timer
 PIN_BUTTONB = 16 ## Button To toggle the round interval time from 3 to 5 minutes
 PIN_DHTSENSOR = 4 ##GPIO PIN On Connecting Datapin of DHT AM2302 sensor
@@ -23,15 +24,19 @@ global THsensor
 if RPI_PLATFORM:
 	try:
 		import RPi.GPIO as GPIO
-		import Adafruit_DHT as TSens
-		THsensor = TSens.AM2302
-	except ImportError:
-		print(ImportError)
-		print("Not running on a Raspberry pi")
+	except ImportError  as error:
+		#print(ImportError.args)
+		print("[Import Error] Import of GPIO library failed. Maybe not running on a Raspberry pi or RPi.GPIO not installed")
 		RPI_PLATFORM = False
 
-
-
+## Check Adafruit Library
+try:
+	import Adafruit_DHT as TSens
+	THsensor = TSens.AM2302
+except ImportError as error:
+	#print(ImportError.args)
+	print("[Import Error] DHT 22 Sensor Not accessible. Install Adafruit_DHT library")
+	DHT_SENSOR = False
 
 import pygame
 import os, subprocess
