@@ -143,11 +143,13 @@ def readTempHumidity():
 	if humidity is not None and temperature is not None:
 		print("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
 		txtCredits.set("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
+		root.after(2500, readTempHumidity)
 	else:
 		print('Failed to get reading. Try again!')
 		txtCredits.set(strerror)
+		root.after(10, readTempHumidity)
 
-	root.after(1500, readTempHumidity)
+
 	return humidity,temperature
 
 def changeInterval(*args):
