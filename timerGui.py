@@ -15,11 +15,14 @@
 STR_VER = "0.1 beta"
 RPI_PLATFORM = True
 DHT_SENSOR = True
+DHT_SENSOR_NEW = True ##Newer Adafruit Lib
+
 PIN_BUTTONA = 21 ##The Button TO start Stop the timer
 PIN_BUTTONB = 16 ## Button To toggle the round interval time from 3 to 5 minutes
 PIN_DHTSENSOR = 4 ##GPIO PIN On Connecting Datapin of DHT AM2302 sensor
 
 global THsensor
+global dhtDevice ##For the New Adafruit Lib
 
 if RPI_PLATFORM:
 	try:
@@ -29,7 +32,7 @@ if RPI_PLATFORM:
 		print("[Import Error] Import of GPIO library failed. Maybe not running on a Raspberry pi or RPi.GPIO not installed")
 		RPI_PLATFORM = False
 
-## Check Adafruit Library
+## Check Adafruit Library Legacy
 try:
 	import Adafruit_DHT as TSens
 	THsensor = TSens.AM2302
@@ -37,6 +40,20 @@ except ImportError as error:
 	#print(ImportError.args)
 	print("[Import Error] DHT 22 Sensor Not accessible. Install Adafruit_DHT library")
 	DHT_SENSOR = False
+
+##Check Adafruit Modern Library
+try:
+	import board
+	import adafruit_dht
+	DHT_SENSOR_NEW = True
+	DHT_SENSOR = False ## Do not Use Legacy One
+
+	# Initial the dht device, with data pin connected to:
+	dhtDevice = adafruit_dht.DHT22(board.D4)
+
+except ImportError as error:
+	print("[Import Error]  adafruit-circuitpython-dh Library Failed. Install adafruit-circuitpython-dh library")
+	DHT_SENSOR_NEW = False
 
 import pygame
 import os, subprocess
@@ -106,12 +123,26 @@ def _from_rgb(rgb):
 # Try to grab a sensor reading.  Use the read_retry method which will retry up
 # to 15 times to get a sensor reading (waiting 2 seconds between each retry).
 def readTempHumidity():
-	humidity, temperature = TSens.read_retry(THsensor, PIN_DHTSENSOR)
+	temperature = None
+	humidity = None
+	try:
+		if (DHT_SENSOR_NEW):
+			# Print the values to the serial port
+			temperature = dhtDevice.temperature
+			humidity = dhtDevice.humidity
+		elif (DHT_SENSOR):
+			humidity, temperature = TSens.read_retry(THsensor, PIN_DHTSENSOR)
+
+	except RuntimeError as error:
+			# Errors happen fairly often, DHT's are hard to read, just keep going
+			print(error.args[0])
+
 	if humidity is not None and temperature is not None:
 		print("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
 		txtCredits.set("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
 	else:
 		print('Failed to get reading. Try again!')
+
 	root.after(3500, readTempHumidity)
 	return humidity,temperature
 

@@ -45,20 +45,25 @@ pip3 install RPi.GPIO
 </code>
 
 Adafruit library for temperature and humidity sensor (Either Option):
-* Deprecated version that still works:
-    <code>
-    sudo pip3 install Adafruit_DHT
-    </code>
-    Manual Installation:  
-    <code>
-    git clone https://github.com/adafruit/Adafruit_Python_DHT.git  
-    * cd Adafruit_Python_DHT
-    * sudo apt-get install build-essential python-dev
-    * sudo python setup.py install /sudo python3 setup.py install
-    </code>
-This one can be run by sudo from any user
-   
-More recent version, with which I had trouble using:  
+Deprecated version that still works:
+<code>
+sudo pip3 install Adafruit_DHT
+</code>
+Manual Installation:  
+<code>
+git clone https://github.com/adafruit/Adafruit_Python_DHT.git  
+cd Adafruit_Python_DHT  
+sudo apt-get update  
+sudo apt-get install build-essential python-dev  
+sudo python3 setup.py install  
+</code>
+The above library works, but needs our timer python script to be run as sudo:   
+<code>
+sudo python3 timerGui.py
+<\code> 
+
+More recent version, with which I had trouble using:
+(Still within our virtual environment):    
 <code>
 pip3 install adafruit-circuitpython-dht
 sudo apt-get install libgpiod2
