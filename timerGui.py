@@ -130,7 +130,9 @@ def readTempHumidity():
 	strerror = ""
 	try:
 		if (DHT_SENSOR):
-			humidity, temperature = TSens.read_retry(THsensor, PIN_DHTSENSOR)
+			#read_retry(sensor, pin, retries=15, delay_seconds=2, platform=None):
+			#humidity, temperature = TSens.read_retry(THsensor, platform=PIN_DHTSENSOR.retries=2,seconds=2)
+			humidity, temperature = TSens.read(THsensor,platform=PIN_DHTSENSOR)
 		elif (DHT_SENSOR_NEW):
 			# Print the values to the serial port
 			temperature = dhtDevice.temperature
@@ -143,11 +145,11 @@ def readTempHumidity():
 
 	if humidity is not None and temperature is not None:
 		print("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
-		txtCredits.set("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
+		txtSensor.set("Temp={0:0.1f}*C \n Humidity={1:0.1f}%".format(temperature, humidity))
 		root.after(2500, readTempHumidity)
 	else:
-		print('Failed to get reading. Try again!')
-		txtCredits.set(strerror)
+		print('Failed to get reading.\n Try again!')
+		txtSensor.set(strerror)
 		root.after(100, readTempHumidity)
 
 
@@ -461,6 +463,11 @@ txtCredits = StringVar()
 txtCredits.set("NeonPi Bjj Timer V{:1}\nhttps://github.com/kostasl/".format(STR_VER))
 lblCredits = ttk.Label(root, textvariable=txtCredits, font=fnt_small, foreground="#81ced4" , background="black")
 lblCredits.place(relx=0.5, rely=0.95, anchor=CENTER)
+
+txtSensor = StringVar()
+txtSensor.set("DHT Sensor Reading".format(STR_VER))
+lblSensor = ttk.Label(root, textvariable=txtSensor, font=fnt_small, foreground="#81ced4" , background="black")
+lblSensor.place(relx=0.75, rely=0.5, anchor=CENTER)
 
 ## Make Array of Colours For The Breathing/Rest Animation
 i=0

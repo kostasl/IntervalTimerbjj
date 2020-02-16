@@ -59,23 +59,44 @@ sudo apt-get install build-essential python-dev
 sudo python3 setup.py install  
 </code>
 The above library works, but needs our timer python script to be run as sudo:     
+
 <code>
 sudo python3 timerGui.py  
-<\code> 
+</code> 
 
 More recent version, which runs without need for sudo :
 (Still within our virtual environment):    
 <code>
 pip3 install adafruit-circuitpython-dht  
 sudo apt-get install libgpiod2  
-<\code>  
+</code>  
 If you hit permission problems then add user to the gpio group:  
 <code>
-groupadd <user> gpio  
-<\code>
+groupadd \<user\> gpio  
+</code>
 If still in trouble then try running with user pi.
 
+## Adding Run on startup
+(courtesy of [https://learn.sparkfun.com/tutorials/how-to-run-a-raspberry-pi-program-on-startup/all])  
+Method : autostart
+If you need access to elements from the X Window System (e.g. you are making a graphical dashboard or game), then you will need to wait for the X server to finish initializing before running your code. One way to accomplish this is to use the autostart system.
+### create .Desktop file
+<code>
+mkdir /home/pi/.config/autostart  
+nano /home/pi/.config/autostart/timer.desktop    
+</code>
+Copy in the following text into the timer.desktop file:    
+<code> 
 
+[Desktop Entry]      
+Type=Application    
+Name=Neon Timer  
+Exec=bash -c 'cd /home/pi/workspace/IntervalTimerbjj/ && source env/bin/activate && /usr/bin/python3 timerGui.py'    
+Path=home/pi/workspace/IntervalTimerbjj/   
+GenericName=A timer for Bjj rounds down at Neon Martial Arts  
+Comment[en_US]=Start the Full Screen Timer  
+ </code>
+ 
 ##Oss!
 ### Konstantinos Lagogiannis 2020
 
