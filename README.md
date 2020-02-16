@@ -4,6 +4,7 @@ In an attempt to contribute to the martial arts gym opened by my friends here in
 It is designed to run on a Raspberry Pi Zero connected to a display with sound. 
 To avoid the need to use a mouse and keyboard or touchscreen,  the timer reads input from a  button connected  (through pull_up) to GPIO pin 21. 
 The  main idea was to keep this simple so anyone can use who is running the class. In this spirit this is  timer has a single button that is used to start and stop/reset.
+With the addition of a AM2302 Sensor connected to GPIO pin 4, the timer also displays the room's temperature and humidity.   
  
 The timer has two countdown states, going from active (fight round) countdown, and then to a rest period countdown before the next round
 countdown initiates. It keeps track of the number of cycles/Rounds and displays it on the main interface. It makes a warning beeps during the last 10sec before countdown in either state is due.
@@ -39,38 +40,40 @@ sudo apt-get install python3-pil.imagetk
 pip3 install Pillow  
 </code>
 
-library for GPIO access to input buttons:  
+library for GPIO access to input buttons:    
 <code>
-pip3 install RPi.GPIO
+pip3 install RPi.GPIO  
 </code>
 
-Adafruit library for temperature and humidity sensor (Either Option):
-Deprecated version that still works:
+Adafruit library for temperature and humidity sensor (Either Option).  
+You can try with the deprecated version that still works:    
 <code>
-sudo pip3 install Adafruit_DHT
+sudo pip3 install Adafruit_DHT  
 </code>
 Manual Installation:  
-<code>
-git clone https://github.com/adafruit/Adafruit_Python_DHT.git  
+<code>  
+git clone https://github.com/adafruit/Adafruit_Python_DHT.git    
 cd Adafruit_Python_DHT  
 sudo apt-get update  
 sudo apt-get install build-essential python-dev  
 sudo python3 setup.py install  
 </code>
-The above library works, but needs our timer python script to be run as sudo:   
+The above library works, but needs our timer python script to be run as sudo:     
 <code>
-sudo python3 timerGui.py
+sudo python3 timerGui.py  
 <\code> 
 
-More recent version, with which I had trouble using:
+More recent version, which runs without need for sudo :
 (Still within our virtual environment):    
 <code>
-pip3 install adafruit-circuitpython-dht
-sudo apt-get install libgpiod2
+pip3 install adafruit-circuitpython-dht  
+sudo apt-get install libgpiod2  
+<\code>  
+If you hit permission problems then add user to the gpio group:  
+<code>
+groupadd <user> gpio  
 <\code>
-this one seems to work only for user pi.
-In any case add user to the gpio group:
-groupadd <user> gpio
+If still in trouble then try running with user pi.
 
 
 ##Oss!
