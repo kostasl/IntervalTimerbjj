@@ -33,7 +33,8 @@ if RPI_PLATFORM:
 		print("[Import Error] Import of GPIO library failed. Maybe not running on a Raspberry pi or RPi.GPIO not installed")
 		RPI_PLATFORM = False
 
-## Check Adafruit Library Legacy
+## Check Adafruit Library Legacy #
+## Legacy works more reliably So Should take precedence
 try:
 	import Adafruit_DHT as TSens
 	THsensor = TSens.AM2302
@@ -47,7 +48,7 @@ try:
 	import board
 	import adafruit_dht
 	DHT_SENSOR_NEW = True
-	DHT_SENSOR = False ## Do not Use Legacy One
+	#DHT_SENSOR = False ## Do not Use Legacy One
 	print("[Info] Found adafruit_dht library ")
 	# Initial the dht device, with data pin connected to GPIO 4:
 	dhtDevice = adafruit_dht.DHT22(board.D4)
@@ -128,12 +129,12 @@ def readTempHumidity():
 	humidity = None
 	strerror = ""
 	try:
-		if (DHT_SENSOR_NEW):
+		if (DHT_SENSOR):
+			humidity, temperature = TSens.read_retry(THsensor, PIN_DHTSENSOR)
+		elif (DHT_SENSOR_NEW):
 			# Print the values to the serial port
 			temperature = dhtDevice.temperature
 			humidity = dhtDevice.humidity
-		elif (DHT_SENSOR):
-			humidity, temperature = TSens.read_retry(THsensor, PIN_DHTSENSOR)
 
 	except RuntimeError as error:
 			# Errors happen fairly often, DHT's are hard to read, just keep going
