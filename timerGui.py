@@ -149,7 +149,7 @@ def readTempHumidity():
 		root.after(2500, readTempHumidity)
 	else:
 		#print('Failed to get reading.\n Try again!')
-		txtSensor.set("Temp=NA \n H=NA%\n {:3}".format(temperature, humidity,strerror))
+		txtSensor.set("Temp=NA \n H=NA%\n {:1}".format(strerror))
 		root.after(2000, readTempHumidity)
 
 
