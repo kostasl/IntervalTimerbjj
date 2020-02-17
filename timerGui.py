@@ -12,7 +12,7 @@
 ## pygame
 ## tkinter
 ## Keyboard GPIO connected 2 Buttons
-STR_VER = "0.1 beta"
+STR_VER = "0.3 "
 RPI_PLATFORM = True
 DHT_SENSOR = True
 DHT_SENSOR_NEW = True  ##Newer Adafruit Lib
@@ -477,19 +477,20 @@ imglogo = ImageTk.PhotoImage(ImageTkLogo)
 
 
 ##Aesthetics
-fnt = font.Font(family='Verdana', size=80, weight='bold')
-fnts = font.Font(family='Verdana', size=60, weight='bold')
+fnt_Time = font.Font(family='Verdana', size=80, weight='bold')
+fnts_Round = font.Font(family='Verdana', size=60, weight='bold')
 fnt_small = font.Font(family='Courier', size=13, weight='normal')
+fnt_Medium = font.Font(family='Verdana', size=16, weight='normal')
 
 ### Time Left Label
 txtTime = StringVar()
 txtTime.set("-: NeonPi Bjj Timer :-")  ##Does not Show
-lbl = ttk.Label(root, textvariable=txtTime, font=fnt, foreground="#81ced4", background="black")
+lbl = ttk.Label(root, textvariable=txtTime, font=fnt_Time, foreground="#81ced4", background="black")
 lbl.place(relx=0.5, rely=0.75, anchor=CENTER)
 # hsv_to_rgb(h, s, v)    Convert the color from HSV coordinates to RGB coordinates.
 ### Number of Rounds Label
 txtRound = StringVar()
-lblRound = ttk.Label(root, textvariable=txtRound, font=fnts, foreground="#81ced4", background="black")
+lblRound = ttk.Label(root, textvariable=txtRound, font=fnts_Round, foreground="#81ced4", background="black")
 
 txtCredits = StringVar()
 txtCredits.set("NeonPi Bjj Timer V{:1}\nhttps://github.com/kostasl/".format(STR_VER))
@@ -498,8 +499,8 @@ lblCredits.place(relx=0.5, rely=0.95, anchor=CENTER)
 
 txtSensor = StringVar()
 txtSensor.set("DHT Sensor Reading".format(STR_VER))
-lblSensor = ttk.Label(root, textvariable=txtSensor, font=fnt_small, foreground="#81ced4", background="black")
-lblSensor.place(relx=0.70, rely=0.95, anchor=CENTER)
+lblSensor = ttk.Label(root, textvariable=txtSensor, font=fnt_Medium, foreground="#81ced4", background="black")
+lblSensor.place(relx=0.65, rely=0.05, anchor=CENTER)
 
 ## Make Array of Colours For The Breathing/Rest Animation
 i = 0
