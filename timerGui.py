@@ -80,9 +80,9 @@ global iRounds  ##Number of Roll Rounds
 global troundTime  ##Duration of each round
 global trestTime  ##Duration of each round
 global sndParrol, sndCombat
-global lblEasterEgg
+global lblEasterEgg,lblPauseSymbol
 global cState  ##Timer State
-global canvas, canvImgLogo
+global canvas, canvImgLogo, canvImgPause
 iRounds = 0  ##Count the number of rounds passed
 
 troundIntervals = [5, 3]
@@ -152,7 +152,7 @@ def readTempHumidity():
 
     if humidity is not None and temperature is not None and strerror is None:
         print("T={0:0.1f}*C  H={1:0.1f}%".format(temperature, humidity))
-        txtSensor.set("T={0:0.1f}*C \n H={1:0.1f}%".format(temperature, humidity))
+        txtSensor.set("T={0:0.1f}*C \nH={1:0.1f}%".format(temperature, humidity))
         root.after(2500, readTempHumidity)
     else:
         print(strerror)
@@ -196,10 +196,11 @@ def stopTimer():
     cState = TimerState.STOPPED
     root.after_cancel(AFTER_ROUNDTMR)
 
-    showEasterEgg()
+    #showEasterEgg()
+    showPauseSymbol()
 
     ##Reset Display
-    root.after(1500, resetTimer)
+    AFTER_ROUNDTMR = root.after(1500, resetTimer)
 
     print('STOP STATE')
 
@@ -207,12 +208,14 @@ def stopTimer():
 # Restarts Round
 def startTimer():
     global cState
+    root.after_cancel(AFTER_ROUNDTMR)  ##Empty the call timer Queue
     cState = TimerState.ROLL
     endTime = datetime.now() + timedelta(minutes=troundTime, seconds=0)
     showRound(iRounds)  ##Start The Timer
     show_Roundtime(endTime)
     print('ROLL STATE')
-    hideEasterEgg()
+    #hideEasterEgg()
+    hidePauseSymbol()
     sndCombat.play()
     # Wake up Screen Saver
     subprocess.call('xset dpms force on', shell=True)
@@ -270,9 +273,20 @@ def showEasterEgg():
     global lblEasterEgg
     # lblRound.pack_forget()
     if (not lblEasterEgg.winfo_ismapped()):
-        lblEasterEgg.pack()
-        lblEasterEgg.place(relx=0.20, rely=0.72, anchor=CENTER)
+      lblEasterEgg.pack()
+      lblEasterEgg.place(relx=0.50, rely=0.72, anchor=CENTER)
 
+
+## Draw Overlay Of the Pause
+def showPauseSymbol():
+    global canvImgPause
+    canvas.itemconfigure(canvImgPause, state="normal")
+
+def hidePauseSymbol():
+    global canvImgPause
+    canvas.itemconfigure(canvImgPause,state="hidden")
+    #canvImgPause.pack(side="bottom")
+    #canvImgPause.pack_forget()  ##Hide it
 
 def hideEasterEgg():
     global lblEasterEgg
@@ -357,7 +371,8 @@ def show_Resttime(endTime):
         iRounds = iRounds + 1  ##Increment Number of Rounds
         # txtRound.set('Round {:2}'.format(iRounds) )
         showRound(iRounds)
-        hideEasterEgg()
+        #hideEasterEgg()
+        hidePauseSymbol()
         if (cState != TimerState.STOPPED):
             cState = TimerState.ROLL
             root.after(1000, show_Roundtime, endTime)
@@ -446,11 +461,16 @@ root.bind("<space>", InputToggle)
 
 # Creates a Tkinter-compatible photo image, which can be used everywhere Tkinter expects an image object.
 imgEasterEgg = ImageTk.PhotoImage(Image.open("res/mattbatten.jpeg"))
+
+#Transparency Pause Symbol
+imgPauseSymbol = ImageTk.PhotoImage(Image.open("res/pause-symbol.png").convert("RGBA"))
 #
+
 ImageTkLogo = Image.open("res/neonLogo.png")
 ImageTkLogo.resize((450, 450), Image.ANTIALIAS)
 ImageTkLogo = ImageTkLogo.convert("RGBA")
 imglogo = ImageTk.PhotoImage(ImageTkLogo)
+
 
 ##Aesthetics
 fnt = font.Font(family='Verdana', size=80, weight='bold')
@@ -475,7 +495,7 @@ lblCredits.place(relx=0.5, rely=0.95, anchor=CENTER)
 txtSensor = StringVar()
 txtSensor.set("DHT Sensor Reading".format(STR_VER))
 lblSensor = ttk.Label(root, textvariable=txtSensor, font=fnt_small, foreground="#81ced4", background="black")
-lblSensor.place(relx=0.75, rely=0.5, anchor=CENTER)
+lblSensor.place(relx=0.70, rely=0.95, anchor=CENTER)
 
 ## Make Array of Colours For The Breathing/Rest Animation
 i = 0
@@ -491,18 +511,35 @@ while (i < 21):
 canvas = Canvas(frame, bg="black", width=950, height=950, bd=0, highlightthickness=0, relief='ridge')
 canvas.pack()
 
+##Create Images with transparency on Canvas
 canvImgLogo = canvas.create_image(950 / 2, 225, anchor=CENTER, image=imglogo)
+canvImgPause = canvas.create_image(950 / 2, 475, anchor=CENTER, image=imgPauseSymbol)
+
 
 lblEasterEgg = ttk.Label(root, image=imgEasterEgg)  ##.pack(side="top")
 lblEasterEgg.pack_forget()  ##Hide it
-##Start The Round Timer recursive 
+##
+
+#lblPauseSymbol  = ttk.Label(root, image=imgPauseSymbol)  ##.pack(side="top")
+#lblPauseSymbol.pack_forget()  ##Hide it
+
+##Start The Round Timer recursive
 iRounds = iRounds + 1
+
 
 ##Initialize Timer Display with default interval
 endTime = datetime.now() + timedelta(minutes=troundTime)
 AFTER_ROUNDTMR = root.after(0, show_Roundtime, endTime)
 resetTimer()
 root.after(10, checkPushButton)
+
+showPauseSymbol()
+
+##Loading Hello Easter Egg
+
+root.after(1000, showEasterEgg)
+root.after(5000, hideEasterEgg)
+
 
 ##Start the Temp Humidity Loop
 if (RPI_PLATFORM):

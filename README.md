@@ -64,7 +64,8 @@ The above library works, but needs our timer python script to be run as sudo:
 sudo python3 timerGui.py  
 </code> 
 
-More recent version, which runs without need for sudo :
+More recent version, which runs without need for sudo, but does not produce responses
+ as reliably as the older, now deprecated library :
 (Still within our virtual environment):    
 <code>
 pip3 install adafruit-circuitpython-dht  
@@ -75,6 +76,9 @@ If you hit permission problems then add user to the gpio group:
 groupadd \<user\> gpio  
 </code>
 If still in trouble then try running with user pi.
+Given how it worked for me,  I recommend using the older library. You can try for yourself I have made the 
+ timer look for both libraries and it will give precedence to the legacy one if both are found. 
+
 
 ## Adding Run on startup
 (courtesy of [https://learn.sparkfun.com/tutorials/how-to-run-a-raspberry-pi-program-on-startup/all])  
