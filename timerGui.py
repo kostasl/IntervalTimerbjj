@@ -127,7 +127,7 @@ def _from_rgb(rgb):
 def readTempHumidity():
 	temperature = None
 	humidity = None
-	strerror = "DHT"
+	strerror = None
 	try:
 		if (DHT_SENSOR):
 			#read_retry(sensor, pin, retries=15, delay_seconds=2, platform=None):
@@ -143,13 +143,13 @@ def readTempHumidity():
 			print(error.args[0])
 			strerror = error.args[0]
 
-	if humidity is not None and temperature is not None:
-		print("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
-		txtSensor.set("Temp={0:0.1f}*C \n Humidity={1:0.1f}%".format(temperature, humidity))
+	if humidity is not None and temperature is not None and strerror is None:
+		print("T={0:0.1f}*C  H={1:0.1f}%".format(temperature, humidity))
+		txtSensor.set("T={0:0.1f}*C \n H={1:0.1f}%".format(temperature, humidity))
 		root.after(2500, readTempHumidity)
 	else:
-		print('Failed to get reading.\n Try again!')
-		txtSensor.set("Temp={0:0.1f}*C \n Humidity={1:0.1f}%\n {:3}".format(temperature, humidity,strerror))
+		#print('Failed to get reading.\n Try again!')
+		txtSensor.set("Temp=NA \n H=NA%\n {:3}".format(temperature, humidity,strerror))
 		root.after(2000, readTempHumidity)
 
 
