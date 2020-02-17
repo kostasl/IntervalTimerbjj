@@ -408,6 +408,7 @@ def show_Roundtime(endTime):
     # Show the time left on  the global label object
     txtTime.set(formatTimerString(remainder))
 
+
     # print(remainder.total_seconds())
 
     if (remainder.total_seconds() > 1):  # and (cState == TimerState.ROLL)
@@ -415,6 +416,8 @@ def show_Roundtime(endTime):
         if (cState != TimerState.STOPPED):
             # Trigger the countdown after 1000ms
             AFTER_ROUNDTMR = root.after(1000, show_Roundtime, endTime)
+        else:
+            showPauseSymbol()
 
     else:
         # Set the end date and time for the countdown
@@ -424,6 +427,7 @@ def show_Roundtime(endTime):
         showRestMsg(iRounds)
         AFTER_ROUNDTMR = root.after(1000, show_Resttime, endTime)
         root.after(1000, bgColourAnimate, 0, 1)
+
 
 
 print("### BJJ timer for Neon Martial Arts Gym Southampton ")
@@ -513,7 +517,7 @@ canvas.pack()
 
 ##Create Images with transparency on Canvas
 canvImgLogo = canvas.create_image(950 / 2, 225, anchor=CENTER, image=imglogo)
-canvImgPause = canvas.create_image(950 / 2, 475, anchor=CENTER, image=imgPauseSymbol)
+canvImgPause = canvas.create_image(950 / 5, 125, anchor=CENTER, image=imgPauseSymbol)
 
 
 lblEasterEgg = ttk.Label(root, image=imgEasterEgg)  ##.pack(side="top")
