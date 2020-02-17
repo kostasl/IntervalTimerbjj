@@ -1,6 +1,6 @@
 #!/usr/bin/python
 ### An Interval timer customized for BJJ and my gym: Neon Martial Arts Southampton UK
-### KONTANTINOS LAGOGIANNIS 2020 - 
+### KONSTANTINOS LAGOGIANNIS 2020 -
 ### It is meant to run on a mini computer like the Raspberry Pi Zero, connected to a screen
 ### It plays a set of recorded sounds to indicate time tick (beep), Start of round ("Combats"), And end of Round "Parol", with 
 ### my voice immitating the way our coach Trevor Birmingham does it.
@@ -127,7 +127,7 @@ def _from_rgb(rgb):
 def readTempHumidity():
 	temperature = None
 	humidity = None
-	strerror = ""
+	strerror = "DHT"
 	try:
 		if (DHT_SENSOR):
 			#read_retry(sensor, pin, retries=15, delay_seconds=2, platform=None):
@@ -149,8 +149,8 @@ def readTempHumidity():
 		root.after(2500, readTempHumidity)
 	else:
 		print('Failed to get reading.\n Try again!')
-		txtSensor.set(strerror)
-		root.after(100, readTempHumidity)
+		txtSensor.set("Temp={0:0.1f}*C \n Humidity={1:0.1f}%\n {:3}".format(temperature, humidity,strerror))
+		root.after(2000, readTempHumidity)
 
 
 	return humidity,temperature
@@ -400,7 +400,7 @@ def show_Roundtime(endTime):
 		root.after(1000, bgColourAnimate,0,1)
 
 print("### BJJ timer for Neon Martial Arts Gym Southampton ")
-print("### Made by KONTANTINOS LAGOGIANNIS 2020, costaslag@gmail.com ")
+print("### Made by KONSTANTINOS LAGOGIANNIS 2020, costaslag@gmail.com ")
 
 print("Make sure your screen saver is off ")
 #$sudo xset s off

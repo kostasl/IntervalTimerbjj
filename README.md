@@ -95,8 +95,24 @@ Exec=bash -c 'cd /home/pi/workspace/IntervalTimerbjj/ && source env/bin/activate
 Path=home/pi/workspace/IntervalTimerbjj/   
 GenericName=A timer for Bjj rounds down at Neon Martial Arts  
 Comment[en_US]=Start the Full Screen Timer  
- </code>
+</code>
  
+#Internet Connection
+Check  /etc/network/interfaces.
+ 
+Routing table:  
+<code>
+sudo route -n  
+</code>
+
+DHCP Request:  
+<code>
+sudo dhclient -v eth0
+</code>
+Add Gateway in case it is missing:
+<code>
+sudo route add default gw 192.168.0.1 enx00ea4c680036
+</code>
 ##Oss!
 ### Konstantinos Lagogiannis 2020
 
