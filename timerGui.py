@@ -500,7 +500,7 @@ lblCredits.place(relx=0.5, rely=0.95, anchor=CENTER)
 txtSensor = StringVar()
 txtSensor.set("DHT Sensor Reading".format(STR_VER))
 lblSensor = ttk.Label(root, textvariable=txtSensor, font=fnt_Medium, foreground="#81ced4", background="black")
-lblSensor.place(relx=0.65, rely=0.05, anchor=CENTER)
+lblSensor.place(relx=0.67, rely=0.05, anchor=CENTER)
 
 ## Make Array of Colours For The Breathing/Rest Animation
 i = 0
