@@ -118,10 +118,10 @@ Add Gateway in case it is missing:
 sudo route add default gw 192.168.0.1 enx00ea4c680036
 </code>
 
-xset dpms reports missing extension:
+For the xset dpms reports missing extension, this may help:
 <code>
 sudo apt install libxcb-dpms0
-<\code>
+</code>
 ##Oss!
 ### Konstantinos Lagogiannis 2020
 
