@@ -22,7 +22,7 @@ from datetime import datetime,timedelta,time
 
 
 global endTime 
-global iRounds ##Number of Roll Rounds 
+global iRounds ##Number of Roll Rounds
 global troundTime ##Duration of each round
 global trestTime ##Duration of each round
 global sndParrol,sndCombat
@@ -185,15 +185,17 @@ def show_Resttime(endTime):
     #remainder = remainder - timedelta(microseconds=remainder.microseconds)
 # Show the time left on  the global label object
 	txt.set(formatTimerString(remainder))
-
+	## Continue if Rest Time is NOT Over
 	if (remainder.total_seconds() > 1):
 			# Carry Rest CountDown If Timer Is not Stopped
 			if (cState != TimerState.STOPPED):
 				root.after(1000, show_Resttime,endTime)
-	else:
+	else: ### Rest Time Is OVER
 			sndCombat.play()
 			endTime = datetime.now() + timedelta(minutes=troundTime)
-			iRounds = iRounds + 1 ##Increment Number of Rounds
+			## INcremend Round
+			iRounds = (iRounds > 20) 1 :iRounds + 1 ##Increment Number of Rounds, But reset at if we reach 20/
+
             #txtRound.set('Round {:2}'.format(iRounds) )
 			showRound(iRounds)
 			hideEasterEgg()
