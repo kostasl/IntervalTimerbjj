@@ -20,6 +20,7 @@ DHT_SENSOR_NEW = True  ##Newer Adafruit Lib
 PIN_BUTTONA = 21  ##The Button TO start Stop the timer
 PIN_BUTTONB = 16  ## Button To toggle the round interval time from 3 to 5 minutes
 PIN_DHTSENSOR = 4  ##GPIO PIN On Connecting Datapin of DHT AM2302 sensor
+MAX_ROUNDS = 20 ## Limit The max Number of rounds before Reset
 
 global THsensor
 global dhtDevice  ##For the New Adafruit Lib
@@ -367,7 +368,7 @@ def show_Resttime(endTime):
     else: ## Rest Time Is over/ nIcrement round and switch to RoundTimer
         sndCombat.play()
         endTime = datetime.now() + timedelta(minutes=troundTime)
-        if (iRounds > 20):
+        if (iRounds > MAX_ROUNDS):
             iRounds = 1
         else :
            iRounds += 1  ##Increment Number of Rounds, But reset at if we reach 20/
