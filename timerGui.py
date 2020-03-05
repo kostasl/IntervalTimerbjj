@@ -20,6 +20,7 @@ DHT_SENSOR_NEW = True  ##Newer Adafruit Lib
 PIN_BUTTONA = 21  ##The Button TO start Stop the timer
 PIN_BUTTONB = 16  ## Button To toggle the round interval time from 3 to 5 minutes
 PIN_DHTSENSOR = 4  ##GPIO PIN On Connecting Datapin of DHT AM2302 sensor
+MAX_ROUNDS = 20 ## Limit The max Number of rounds before Reset
 
 AUTO_RESET_AFTER_IDLE_MINUTES = 60 ##If not input for X minutes, then Stop And Rest timer and Round Count.
 
@@ -104,7 +105,6 @@ tAlarmCountSec = tCountDownIntervalSec[iIntervalModeState]
 AFTER_ROUNDTMR = None
 
 from enum import Enum
-
 
 class TimerState(Enum):
     STOPPED = 1
@@ -388,15 +388,18 @@ def show_Resttime(endTime):
 	# remainder = remainder - timedelta(microseconds=remainder.microseconds)
     # Show the time left on  the global label object
     txtTime.set(formatTimerString(remainder))
-
+    ## If REST TIME iS Not Over
     if (remainder.total_seconds() > 1):
         # Carry Rest CountDown If Timer Is not Stopped
         if (cState != TimerState.STOPPED):
             root.after(1000, show_Resttime, endTime)
-    else:
+    else: ## Rest Time Is over/ nIcrement round and switch to RoundTimer
         sndCombat.play()
         endTime = datetime.now() + timedelta(minutes=troundTime)
-        iRounds = iRounds + 1  ##Increment Number of Rounds
+        if (iRounds > MAX_ROUNDS):
+            iRounds = 1
+        else :
+           iRounds += 1  ##Increment Number of Rounds, But reset at if we reach 20/
         # txtRound.set('Round {:2}'.format(iRounds) )
         showRound(iRounds)
         #hideEasterEgg()
