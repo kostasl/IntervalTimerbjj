@@ -12,7 +12,7 @@
 ## pygame
 ## tkinter
 ## Keyboard GPIO connected 2 Buttons
-STR_VER = "0.3 "
+STR_VER = "0.4 "
 RPI_PLATFORM = True
 DHT_SENSOR = True
 DHT_SENSOR_NEW = True  ##Newer Adafruit Lib
@@ -20,6 +20,8 @@ DHT_SENSOR_NEW = True  ##Newer Adafruit Lib
 PIN_BUTTONA = 21  ##The Button TO start Stop the timer
 PIN_BUTTONB = 16  ## Button To toggle the round interval time from 3 to 5 minutes
 PIN_DHTSENSOR = 4  ##GPIO PIN On Connecting Datapin of DHT AM2302 sensor
+
+AUTO_RESET_AFTER_IDLE_MINUTES = 60 ##If not input for X minutes, then Stop And Rest timer and Round Count.
 
 global THsensor
 global dhtDevice  ##For the New Adafruit Lib
@@ -76,19 +78,28 @@ import colorsys as colsys
 from datetime import datetime, timedelta, time
 
 global endTime
+global lastInputTime
 global iRounds  ##Number of Roll Rounds
 global troundTime  ##Duration of each round
 global trestTime  ##Duration of each round
+global tAlarmCountSec  ##Last X seconds to begin Sounding Countdown
+global iIntervalModeState ##The timer supports different sets of intervals as defined by  troundIntervals,tRestIntervals,tCountDownIntervalSec
 global sndParrol, sndCombat
 global lblEasterEgg,lblPauseSymbol
 global cState  ##Timer State
 global canvas, canvImgLogo, canvImgPause
-iRounds = 0  ##Count the number of rounds passed
 
-troundIntervals = [5, 3]
-tRestIntervals = [1, 0.5]
-troundTime = troundIntervals[0]  ##min
-trestTime = tRestIntervals[0]
+iRounds = 0  ##Count the number of rounds passed
+lastInputTime = datetime.now()
+iIntervalModeState = 0 ##Start in Mode
+troundIntervals = [5, 3, 5]
+tRestIntervals = [1, 0.5, 1]
+tCountDownIntervalSec = [10, 10, 3] ##At which seconds to start the beeping countdown
+
+troundTime = troundIntervals[iIntervalModeState]  ##min
+trestTime = tRestIntervals[iIntervalModeState]
+tAlarmCountSec = tCountDownIntervalSec[iIntervalModeState]
+
 ##Handle to RoundTimer root.after call
 AFTER_ROUNDTMR = None
 
@@ -163,19 +174,25 @@ def readTempHumidity():
 
 
 def changeInterval(*args):
-    global troundTime, trestTime
+    global troundTime, trestTime,tAlarmCountSec
+    global iIntervalModeState
+
     stopTimer()
     sndBeep.play()
-    print("Changed Interval");
+    print("Change Interval:");
 
-    if (troundTime == troundIntervals[0]):
-        troundTime = troundIntervals[1]
-        trestTime = tRestIntervals[1]
+
+    if (iIntervalModeState < (len(troundIntervals)-1) ):
+        iIntervalModeState += 1
     else:
-        troundTime = troundIntervals[0]
-        trestTime = tRestIntervals[0]
-        print("Change Interval to %(interval)d min" % {"interval": troundTime});
-        resetTimer()
+        iIntervalModeState = 0
+
+    troundTime = troundIntervals[iIntervalModeState]
+    trestTime = tRestIntervals[iIntervalModeState]
+    tAlarmCountSec = tCountDownIntervalSec[iIntervalModeState]
+    print("Change Interval to %(interval)d-%(rest)d-%(alarm)d-" % {"interval": troundTime,"rest": trestTime,"alarm":tAlarmCountSec});
+    resetTimer()
+
 
 
 def quit(*args):
@@ -236,6 +253,8 @@ def InputToggle(args):
 def checkPushButton():
     global cState
     global bStateA, bStateB
+    global lastInputTime
+
     button_stateA = not bStateA
     button_stateB = not bStateB
     if RPI_PLATFORM:
@@ -246,6 +265,7 @@ def checkPushButton():
     if (button_stateA == False and (bStateA == ButtonState.BUTTONRELEASED)):
         bStateA = ButtonState.BUTTONPRESSED
         print('Button A Pressed.')
+        lastInputTime = datetime.now() ##Save the last time user interacted
         ## If Timer Was Stopped Then Button Should Start it
         if (cState == TimerState.STOPPED):
             startTimer()
@@ -260,10 +280,18 @@ def checkPushButton():
     if (button_stateB == False and (bStateB == ButtonState.BUTTONRELEASED)):
         bStateB = ButtonState.BUTTONPRESSED
         print('Button B Pressed.')
+        lastInputTime = datetime.now() ##Save the last time user interacted
         changeInterval()
     elif (button_stateB == True and (bStateB == ButtonState.BUTTONPRESSED)):
         bStateB = ButtonState.BUTTONRELEASED
         print('Button B Released.')
+
+    ## Check if no input/idle timer for too long and stop/reset
+    idleTimeMin = datetime.now() - lastInputTime
+    if (idleTimeMin > timedelta(minutes=AUTO_RESET_AFTER_IDLE_MINUTES)):
+        stopTimer()
+        resetTimer()
+        iRounds = 0
 
     # Delay Recursive
     root.after(100, checkPushButton)
@@ -352,7 +380,7 @@ def show_Resttime(endTime):
     remainder = endTime - datetime.now()
 
     ##play Time Approach beep
-    if (remainder.total_seconds() <= 10 and remainder.total_seconds() > 1):
+    if (remainder.total_seconds() <= tAlarmCountSec and remainder.total_seconds() > 1):
         sndBeep.play()
     # showEasterEgg()
 
@@ -402,7 +430,7 @@ def show_Roundtime(endTime):
     # remainder = remainder - timedelta(microseconds=remainder.microseconds)
 
     ##play Time Approach beep
-    if (remainder.total_seconds() <= 10 and remainder.total_seconds() > 1):
+    if (remainder.total_seconds() <= tAlarmCountSec and remainder.total_seconds() > 1):
         sndBeep.play()
 
     # Show the time left on  the global label object
@@ -500,7 +528,7 @@ lblCredits.place(relx=0.5, rely=0.95, anchor=CENTER)
 txtSensor = StringVar()
 txtSensor.set("DHT Sensor Reading".format(STR_VER))
 lblSensor = ttk.Label(root, textvariable=txtSensor, font=fnt_Medium, foreground="#81ced4", background="black")
-lblSensor.place(relx=0.67, rely=0.05, anchor=CENTER)
+lblSensor.place(relx=0.67, rely=0.1, anchor=CENTER)
 
 ## Make Array of Colours For The Breathing/Rest Animation
 i = 0
@@ -517,7 +545,7 @@ canvas = Canvas(frame, bg="black", width=950, height=950, bd=0, highlightthickne
 canvas.pack()
 
 ##Create Images with transparency on Canvas
-canvImgLogo = canvas.create_image(950 / 2, 225, anchor=CENTER, image=imglogo)
+canvImgLogo = canvas.create_image(950 / 2, 230, anchor=CENTER, image=imglogo)
 canvImgPause = canvas.create_image(950 / 5, 125, anchor=CENTER, image=imgPauseSymbol)
 
 
