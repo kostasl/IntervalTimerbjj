@@ -190,8 +190,13 @@ def changeInterval(*args):
     troundTime = troundIntervals[iIntervalModeState]
     trestTime = tRestIntervals[iIntervalModeState]
     tAlarmCountSec = tCountDownIntervalSec[iIntervalModeState]
-    print("Change Interval to %(interval)d-%(rest)d-%(alarm)d-" % {"interval": troundTime,"rest": trestTime,"alarm":tAlarmCountSec});
-    resetTimer()
+    strIntervalSet = "Change Interval to %(interval)d-%(rest)d-%(alarm)d-" % {"interval": troundTime,"rest": trestTime,"alarm":tAlarmCountSec}
+    print(strIntervalSet);
+    ## Show Interval Setting
+    txtTime.set("%(interval)d-%(rest)d-%(alarm)d" % {"interval": troundTime,"rest": trestTime,"alarm":tAlarmCountSec} )
+
+    ## Show Round Time/ Ready to start
+    root.after(500,resetTimer)
 
 
 
